@@ -1,0 +1,8 @@
+# Archive list for generic streamdevice.
+#
+# These lines should have the format "PV PERIOD_IN_S" or 
+# "PV PERIOD_IN_S monitor".
+#
+# Macros:
+#     IOC  - The IOC base PV.
+#     BASE - The device base PV.

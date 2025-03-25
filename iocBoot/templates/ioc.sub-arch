@@ -1,0 +1,15 @@
+# IOC archive file
+## iocAdmin PV's on this IOC
+
+# Generate IOC archive request
+file archive_iocAdmin.tpl-arch
+{
+    { IOC = "$$IOC_PV" }
+}
+
+$$LOOP(DEVICE)
+file gsd.archive
+{
+    { IOC = "$$IOC_PV", BASE  = "$$BASE" }
+}
+$$ENDLOOP(DEVICE)
