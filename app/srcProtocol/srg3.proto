@@ -1,0 +1,52 @@
+# streamDevice protocol for MKS SRG-3 Spinning Rotor Gauge System
+# Author: Karl Gumerlock (klg@slac.stanford.edu)
+
+# Parameters
+OutTerminator = CR;
+InTerminator  = 0x3E; # 0x3E is the greater-than symbol '>'
+ReplyTimeout  = 2000;
+ReadTimeout   = 100;
+WriteTimeout  = 100;
+ExtraInput    = Ignore;
+
+# Figured out why responses usually, but not always, start with "> "
+# This causes frequent input parsing failures, but starting each
+# in specification with "> " fails more often than the current strings.
+# Upon further examination of the data passing back and forth, it was
+# observed that the prompt character '>' is transmitted as the final
+# byte of a reply message from the SRG-3. As long as the '>' arrived in the
+# same TCP packet as that reply message, it was ignored by streamDevice,
+# which saw the CR LF and said "all is well, disregard further bytes".
+# On occasion, when the SRG-3 needed extra time until it was ready to take
+# another command (which it indicates by transmitting the prompt character),
+# the '>' would arrive all by its lonesome in its own packet, becoming the
+# first byte in the next reply. None of our input specifiers look for the
+# '>', so it would generate an error.
+# Problem fixed by adding > to the terminator string for received packets.
+
+# Write a debug string and read in the response
+sendDebug           { out "%s";                 in "%39c"                 }
+
+# Write a command with no arguments 
+writeCmd            { out "\$1";                in "";						}
+
+# Write a command with no arguments to a specific channel
+writeChanCmd        { out "\$2 \$1";                                        }
+
+# Read/write an integer
+readInt             { out "\$1";                in "%i \r\n"					}
+writeInt            { out "%i \$1";             in "";                     }
+
+# Read/write a float
+readFloat           { out "\$1";                in "%f \r\n"                   }
+writeFloat          { out "%f \$1";             in "";                            }
+
+# Read a float from a specified channel
+readChanFloat       { out "\$2 \$1";            in "%f \r\n"                   }
+
+# Read/write a string
+readStr             { out "\$1";                in "%[^\r\n]\r\n"                   }
+writeStr            { out "\x22%s\x22 \$1";     in "";                     }
+
+# Try to catch errors if SRG-3 is in talkative mode
+catchError          {                           in "Err %i: %*s"          }

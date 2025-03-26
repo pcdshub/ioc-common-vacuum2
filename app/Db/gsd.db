@@ -1,8 +1,0 @@
-# Required Macros:
-#   BASE
-#       EPICS device prefix.
-#   DEV
-#	ASYN port
-
-# Add records here!!
-

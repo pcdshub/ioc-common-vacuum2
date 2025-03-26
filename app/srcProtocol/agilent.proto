@@ -1,0 +1,102 @@
+OutTerminator = ;
+InTerminator = ;
+ExtraInput = Ignore;
+ReadTimeout = 100;
+ReplyTimeout = 1000;
+LockoutTimeout = 10000;
+
+# The last two characters of the output message are calculated by the following
+# means:
+#   1. Xor all proceeding bytes excluding 0x02, the STX byte
+#   2. Convert the resulting value to hexadecimal e.g. 0x81
+#   3. Convert the hexadecimal value to a string e.g. 0x81 --> "81"
+#   4. If there are any alphabetic characters in the string the must be
+#   converted to all caps.
+#   5. Individually represent the characters in their ascii hexadecimal. In
+#   this example "81" --> 0x38 0x31
+#   6. These two resulting bytes are your checksum.
+#   7. Congratulate Agilent for a job well done. 
+
+# Obtain pump current draw in mA
+getPumpCurrent {
+    out 0x02 0x80 "200" 0x30 0x03 0x38 0x31;
+    in  0x02 0x80 "200" 0x30 "%06g" 0x03 "%*2c";
+}
+
+# Obtain pump voltage in Volts
+getPumpVoltage {
+    out 0x02 0x80 "201" 0x30 0x03 0x38 0x30;
+    in  0x02 0x80 "201" 0x30 "%06g" 0x03 "%*2c";
+}
+
+# Obtain pump power in Watts
+getPumpPower {
+    out 0x02 0x80 "202" 0x30 0x03 0x38 0x33;
+    in  0x02 0x80 "202" 0x30 "%06g" 0x03 "%*2c";
+}
+
+# Obtain pump drive frequency in Hz
+getPumpFreq {
+    out 0x02 0x80 "203" 0x30 0x03 0x38 0x32;
+    in  0x02 0x80 "203" 0x30 "%06g" 0x03 "%*2c";
+}
+
+# Obtain pump temperature in Celsius
+getPumpTemp {
+    out 0x02 0x80 "204" 0x30 0x03 0x38 0x35;
+    in  0x02 0x80 "204" 0x30 "%06g" 0x03 "%*2c";
+}
+
+# Obtain pump status 
+getPumpStatus {
+    out 0x02 0x80 "205" 0x30 0x03 0x38 0x34;
+    in  0x02 0x80 "205" 0x30 "%06i" 0x03 "%*2c";
+}
+
+# Obtain pump Error Code
+getPumpError {
+    out 0x02 0x80 "206" 0x30 0x03 0x38 0x37;
+    in  0x02 0x80 "206" 0x30 "%06i" 0x03 "%*2c";
+}
+
+
+
+
+#   #readlog {
+#   #    out 0x02 0x80 "\$1" 0x30 0x03 "%01<xor>";
+#   #    in  0x02 0x80 "\$1" 0x30 "%1d" 0x03 "%*2c";
+#   #}
+#   #
+#   #writelog {
+#   #    out 0x02 0x80 "\$1" 0x31 "%1d" 0x03 "%01<xor>";
+#   #    in  0x02 0x80 0x06 0x03 "%*2c";
+#   #    @init { readlog($1); }
+#   #}
+#   #
+#   #readnum {
+#   #    out 0x02 0x80 "\$1" 0x30 0x03 "%01<xor>";
+#   #    in  0x02 0x80 "\$1" 0x30 "%06g" 0x03 "%*2c";
+#   #}
+#   #
+#   #writenum {
+#   #    out 0x02 0x80 "\$1" 0x31 "%06g" 0x03 "%01<xor>";
+#   #    in  0x02 0x80 0x06 0x03 "%*2c";
+#   #    @init { readnum($1); }
+#   #}
+#   #
+#   #readstr {
+#   #    out 0x02 0x80 "\$1" 0x30 0x03 "%01<xor>";
+#   #    in  0x02 0x80 "\$1" 0x30 "%10c" 0x03 "%*2c";
+#   #}
+#   #
+#   #writestr {
+#   #    out 0x02 0x80 "\$1" 0x31 "%10s" 0x03 "%01<xor>";
+#   #    in  0x02 0x80 0x06 0x03 "%*2c";
+#   #    @init { readstr($1); }
+#   #}
+#   #
+#   #writeexp {
+#   #    out 0x02 0x80 "\$1" 0x31 "%10.1E" 0x03 "%01<xor>";  # "X.X E. XX" according to the manual?
+#   #    in  0x02 0x80 0x06 0x03 "%*2c";
+#   #    @init { readnum($1); }
+#   #}
