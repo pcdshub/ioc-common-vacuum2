@@ -1,0 +1,61 @@
+record(bi, "$(BASE):PSTAT_$(SPNAME)_MON") {
+  field(DESC, "$(SPNAME) setpoint ON readback")
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getSetpoint($(SETPOINT),$(BASE):PSTAT_$(SPNAME)_ON,$(BASE):PSTAT_$(SPNAME)_OFF) $(PORT)")
+  field(ZNAM, "inactive")
+  field(ONAM, "active")
+  field(SCAN, "2 second")
+  field(ZSV, "NO_ALARM")
+  field(OSV, "MAJOR")
+}
+
+record(ao, "$(BASE):PSTAT_$(SPNAME)_ON") {
+  field(DESC, "$(SPNAME) setpoint ON readback")
+}
+
+record(ao, "$(BASE):PSTAT_$(SPNAME)_OFF") {
+  field(DESC, "$(SPNAME) setpoint OFF readback")
+}
+
+record(ao, "$(BASE):PSTAT_$(SPNAME)_HYSDES") {
+  field(DRVH, "99999900")
+  field(DRVL, "10")
+  field(FLNK, "$(BASE):PSTAT_$(SPNAME)_OFFCALCHYS")
+  field(EGU, "%")
+  field(PREC, "0")
+  field(ASG, "VACWRITE")
+}
+
+record(calcout, "$(BASE):PSTAT_$(SPNAME)_OFFCALCHYS") {
+  field(DTYP, "stream")
+  field(CALC, "A*(C/100+1)<B?A*(C/100+1):B")
+  field(INPA, "$(BASE):PSTAT_$(SPNAME)_ON.VAL")
+  field(INPB, "1E-4")
+  field(INPC, "$(BASE):PSTAT_$(SPNAME)_HYSDES.VAL")
+  field(OUT, "@gammaqpc.proto.db setSetpoint($(SETPOINT),$(CHANNEL),$(BASE):PSTAT_$(SPNAME)_ON) $(PORT)")
+}
+
+record(ao, "$(BASE):PSTAT_$(SPNAME)_ONDES") {
+  field(DRVL, "1.0E-10")
+  field(DRVH, "9.4E-5")
+  field(EGU, "Torr")
+  field(ASG, "VACWRITE")
+  field(FLNK, "$(BASE):PSTAT_$(SPNAME)_OFFCALCON")
+}
+
+record(calcout, "$(BASE):PSTAT_$(SPNAME)_OFFCALCON") {
+  field(DTYP, "stream")
+  field(CALC, "A*(C/100+1)<B?A*(C/100+1):B")
+  field(INPA, "$(BASE):PSTAT_$(SPNAME)_ONDES.VAL")
+  field(INPB, "1E-4")
+  field(INPC, "$(BASE):PSTAT_$(SPNAME)_HYS.VAL")
+  field(OUT, "@gammaqpc.proto.db setSetpoint($(SETPOINT),$(CHANNEL),$(BASE):PSTAT_$(SPNAME)_ONDES) $(PORT)")
+}
+
+record(calc, "$(BASE):PSTAT_$(SPNAME)_HYS") {
+  field(CALC, "(B/A-1)*100")
+  field(INPA, "$(BASE):PSTAT_$(SPNAME)_ON.VAL")
+  field(INPB, "$(BASE):PSTAT_$(SPNAME)_OFF.VAL")
+  field(EGU, "%")
+  field(PREC, "0")
+}

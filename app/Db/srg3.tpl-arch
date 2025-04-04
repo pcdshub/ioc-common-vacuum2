@@ -1,0 +1,160 @@
+# Archive list for MKS SRG3 Spinning Rotor Gauge
+
+# Analog inputs
+$(P):Pressure				0.1
+$(P):AUX1:GetOffset			1
+$(P):AUX1:GetScale			1
+$(P):AUX1:GetVal			0.1
+$(P):AUX2:GetOffset			1
+$(P):AUX2:GetScale			1
+$(P):AUX2:GetVal			0.1
+$(P):GetAccelFactor			1
+$(P):GetAccomFactor			1
+$(P):GetAnalogOutScale		1
+$(P):GetAnalogOutSpan		1
+$(P):GetAnalogOutV			1
+$(P):GetBallDensity			1
+$(P):GetBallDiameter		1
+$(P):GetCalibFactor			1
+$(P):GetCorrFactor			1
+$(P):GetDampLvlA			1
+$(P):GetDampLvlAB			1
+$(P):GetDampLvlB			1
+$(P):GetDecelRate			0.1
+$(P):GetGasMolMass			1
+$(P):GetGasTempCoeff		1
+$(P):GetGasTemperature		0.1
+$(P):GetGasViscosity		1
+$(P):GetInitSpeed			1
+$(P):GetLowerSpeedLimit		1
+$(P):GetMeasureTime			0.1
+$(P):GetMeasuredValue		0.1
+$(P):GetPressure			0.1
+$(P):GetRemainingTime		1
+$(P):GetRotSpeed			0.1
+$(P):GetSignalLevel			0.1
+$(P):GetSystemStatus		0.1
+$(P):GetUpperSpeedLimit		1
+$(P):GetZeroAdjustVal		1
+$(P):GetZeroOffset			1
+$(P):SP1:GetHyst			1
+$(P):SP1:GetTripPoint		1
+$(P):SP2:GetHyst			1
+$(P):SP2:GetTripPoint		1
+$(P):Calib:AccomFactor		1
+$(P):Calib:AccomFactor:Ar	1
+$(P):Calib:AccomFactor:He	1
+$(P):Calib:AccomFactor:Kr	1
+$(P):Calib:AccomFactor:N2	1
+$(P):Calib:AccomFactor:Ne	1
+$(P):Calib:AccomFactor:Xe	1
+$(P):Calib:BallDensity		1
+$(P):Calib:BallDiameter		1
+$(P):Calib:Offset			1
+$(P):Calib:Temp				1
+$(P):Calib:Pressure					1
+$(P):Calib:Pressure:Smoothed		1
+$(P):Calib:Pressure:Pa				1
+$(P):DecelRate:Gas					1
+$(P):PreCalc:1						1
+$(P):PreCalc:2						1
+$(P):Calib:K:Calc					1
+$(P):Calib:Pressure:Calc			1
+$(P):Selected:Gas:Atomic:Weight		1
+
+# Analog outputs
+$(P):AUX1:SetOffset			1	monitor
+$(P):AUX1:SetScale			1	monitor
+$(P):AUX2:SetOffset			1	monitor
+$(P):AUX2:SetScale			1	monitor
+$(P):SP1:SetHyst			1	monitor
+$(P):SP1:SetTripPoint		1	monitor
+$(P):SP2:SetHyst			1	monitor
+$(P):SP2:SetTripPoint		1	monitor
+$(P):SetAccomFactor			1	monitor
+$(P):SetAnalogOutScale		1	monitor
+$(P):SetAnalogOutSpan		1	monitor
+$(P):SetAnalogOutV			1	monitor
+$(P):SetBallDensity			1	monitor
+$(P):SetBallDiameter		1	monitor
+$(P):SetGasMolMass			1	monitor
+$(P):SetGasTempCoeff		1	monitor
+$(P):SetGasTemperature		1	monitor
+$(P):SetGasViscosity		1	monitor
+$(P):SetLowerSpeedLimit		1	monitor
+$(P):SetMeasureTime			1	monitor
+$(P):SetUpperSpeedLimit		1	monitor
+$(P):SetZeroOffset			1	monitor
+
+# Binary status bits
+$(P):GetArmState			1
+$(P):GetAutoStart			1
+$(P):GetAuxPowerSupply		1
+$(P):GetInstOptions			1
+$(P):GetTempUnits			1
+
+# Binary controls 
+$(P):DismountSensor			1	monitor
+$(P):HeadLevAdj				1	monitor
+$(P):HeadMotorAdj			1	monitor
+$(P):MountSensor			1	monitor
+$(P):ResetHeadAdj			1	monitor
+$(P):ResetInstrument		1	monitor
+$(P):RestartMeas			1	monitor
+$(P):SaveHeadAdj			1	monitor
+$(P):SetArmState			1	monitor
+$(P):SetAutoStart			1	monitor
+$(P):SetAuxPowerSupply		1	monitor
+$(P):SetInstOptions			1	monitor
+$(P):SetOutOverride			1	monitor
+$(P):SetTempUnits			1	monitor
+$(P):SetZeroAdjust			1	monitor
+$(P):StandbyMode			1	monitor
+$(P):StartMeasurement		1	monitor
+$(P):StopSensor				1	monitor
+
+# Integer inputs
+$(P):GetBGAvgSpan			1
+$(P):GetGasType				1
+$(P):GetMenuTimeout			1
+$(P):GetNumberPrec			1
+$(P):GetOpHours				1
+$(P):GetRCStatus			1
+$(P):GetRotorDetStatus		1
+$(P):Calib:Gas:Number		1
+$(P):Selected:Gas:Name		1
+
+# Integer outputs
+$(P):SetBGAvgSpan			1	monitor
+$(P):SetGasType				1	monitor
+$(P):SetMenuTimeout			1	monitor
+$(P):SetNumberPrec			1	monitor
+
+# Enumerated inputs
+$(P):AUX1:GetMode			1
+$(P):AUX2:GetMode			1
+$(P):GetDecimalPlaces		1
+$(P):GetPressUnits			1
+$(P):GetSpeedCtlMode		1
+$(P):GetRelayState			1
+$(P):GetRemOutState			1
+
+# Enumerated controls
+$(P):AUX1:SetMode			1	monitor
+$(P):AUX2:SetMode			1	monitor
+$(P):SetDecimalPlaces		1	monitor
+$(P):SetPressUnits			1	monitor
+$(P):SetSpeedCtlMode		1	monitor
+$(P):SetRelayState			1	monitor
+$(P):SetRemOutState			1	monitor
+
+# Misc string inputs
+$(P):GetDate				1
+$(P):GetGasLabel			1
+$(P):GetIDStr				1
+$(P):GetLastHeadAdjTime		1
+$(P):GetMessage				1
+$(P):GetSetupTimestamp		1
+$(P):GetTempScaleLabel		1
+$(P):GetTime				1
+$(P):GetUnitLabel			1

@@ -1,0 +1,157 @@
+
+record(ai, "$(BASE):PUMP_CURRENT") {
+  field(DTYP, "stream")
+  field(INP, "@agilent.proto getPumpCurrent() $(PORT)")
+  field(EGU, "mA")
+  field(SCAN, "1 second")
+}
+
+record(ai, "$(BASE):PUMP_VOLTAGE") {
+  field(DTYP, "stream")
+  field(INP, "@agilent.proto getPumpVoltage() $(PORT)")
+  field(EGU, "V")
+  field(SCAN, "1 second")
+}
+
+record(ai, "$(BASE):PUMP_POWER") {
+  field(DTYP, "stream")
+  field(INP, "@agilent.proto getPumpPower $(PORT)")
+  field(EGU, "W")
+  field(SCAN, "1 second")
+}
+
+record(ai, "$(BASE):PUMP_DRIVE_FREQ") {
+  field(DTYP, "stream")
+  field(INP, "@agilent.proto getPumpFreq $(PORT)")
+  field(EGU, "Hz")
+  field(SCAN, "1 second")
+}
+
+record(ai, "$(BASE):PUMP_TEMP") {
+  field(DTYP, "stream")
+  field(INP, "@agilent.proto getPumpTemp $(PORT)")
+  field(EGU, "C")
+  field(SCAN, "1 second")
+}
+
+record(mbbi, "$(BASE):PUMP_STATUS") {
+  field(DTYP, "stream")
+  field(INP, "@agilent.proto getPumpStatus() $(PORT)")
+  field(SCAN, "1 second")
+  #field(EGU, "N/A")
+  field(ZRST, "Stop")
+  field(ONST, "Waiting Interlock")
+  field(TWST, "Starting")
+  field(THST, "Auto-tuning")
+  field(FRST, "Braking")
+  field(FVST, "Normal")
+  field(SXST, "Fail")
+}
+
+# Extract error byte. Parse w/ :HIGH_LOAD, :SHORT_CIRCUIT, :OVERVOLTAGE,
+# :AUX_FAIL, :POWER_FAIL, :CONTROLLER_OVERTEMP, :PUMP_OVERTEMP,and
+# :NO_CONNECTION PVs
+record(mbbiDirect, "$(BASE):PUMP_ERROR") {
+  field(DTYP, "stream")
+  field(INP, "@agilent.proto getPumpError() $(PORT)")
+  field(SCAN, "1 second")
+  field(DESC, "Extract error byte")
+}
+
+
+
+#   #record(ai, "$(BASE):PUMP_VOLTAGE") {
+#   #  field(DTYP, "stream")
+#   #  field(INP, "@agilent.proto readnum(201) $(PORT)")
+#   #  field(EGU, "V")
+#   #  field(SCAN, "1 second")
+#   #}
+#   #
+#   #record(ai, "$(BASE):PUMP_POWER") {
+#   #  field(DTYP, "stream")
+#   #  field(INP, "@agilent.proto readnum(202) $(PORT)")
+#   #  field(EGU, "W")
+#   #  field(SCAN, "1 second")
+#   #}
+#   #
+#   #record(ai, "$(BASE):PUMP_DRIVE_FREQ") {
+#   #  field(DTYP, "stream")
+#   #  field(INP, "@agilent.proto readnum(203) $(PORT)")
+#   #  field(EGU, "Hz")
+#   #  field(SCAN, "1 second")
+#   #}
+#   #
+#   #record(ai, "$(BASE):PUMP_TEMP") {
+#   #  field(DTYP, "stream")
+#   #  field(INP, "@agilent.proto readnum(204) $(PORT)")
+#   #  field(EGU, "C")
+#   #  field(SCAN, "1 second")
+#   #}
+#   #
+#   #record(mbbi, "$(BASE):PUMP_STATUS") {
+#   #  field(DTYP, "stream")
+#   #  field(INP, "@agilent.proto readnum(205) $(PORT)")
+#   #  field(SCAN, "1 second")
+#   #  field(ZRST, "Stop")
+#   #  field(ONST, "Waiting Interlock")
+#   #  field(TWST, "Starting")
+#   #  field(THST, "Auto-tuning")
+#   #  field(FRST, "Braking")
+#   #  field(FVST, "Normal")
+#   #  field(SXST, "Fail")
+#   #}
+#   #
+#   #record(mbbiDirect, "$(BASE):PUMP_ERROR") {
+#   #  field(DTYP, "stream")
+#   #  field(INP, "@agilent.proto readnum(206) $(PORT)")
+#   #  field(SCAN, "1 second")
+#   #}
+#   #
+
+record(bi, "$(BASE):HIGH_LOAD") {
+  field(INP,  "$(BASE):PUMP_ERROR.B7 CPP")
+  field(ZNAM, "OK")
+  field(ONAM, "ERROR")
+}
+
+record(bi, "$(BASE):SHORT_CIRCUIT") {
+  field(INP,  "$(BASE):PUMP_ERROR.B6 CPP")
+  field(ZNAM, "OK")
+  field(ONAM, "ERROR")
+}
+
+record(bi, "$(BASE):OVERVOLTAGE") {
+  field(INP,  "$(BASE):PUMP_ERROR.B5 CPP")
+  field(ZNAM, "OK")
+  field(ONAM, "ERROR")
+}
+
+record(bi, "$(BASE):AUX_FAIL") {
+  field(INP,  "$(BASE):PUMP_ERROR.B4 CPP")
+  field(ZNAM, "OK")
+  field(ONAM, "ERROR")
+}
+
+record(bi, "$(BASE):POWER_FAIL") {
+  field(INP,  "$(BASE):PUMP_ERROR.B3 CPP")
+  field(ZNAM, "OK")
+  field(ONAM, "ERROR")
+}
+
+record(bi, "$(BASE):CONTROLLER_OVERTEMP") {
+  field(INP,  "$(BASE):PUMP_ERROR.B2 CPP")
+  field(ZNAM, "OK")
+  field(ONAM, "ERROR")
+}
+
+record(bi, "$(BASE):PUMP_OVERTEMP") {
+  field(INP,  "$(BASE):PUMP_ERROR.B1 CPP")
+  field(ZNAM, "OK")
+  field(ONAM, "ERROR")
+}
+
+record(bi, "$(BASE):NO_CONNECTION") {
+  field(INP,  "$(BASE):PUMP_ERROR.B0 CPP")
+  field(ZNAM, "OK")
+  field(ONAM, "ERROR")
+}

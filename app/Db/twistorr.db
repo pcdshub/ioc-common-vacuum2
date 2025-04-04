@@ -1,0 +1,190 @@
+record(bo, "$(BASE):RUN") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(000) $(PORT)")
+  field(ZNAM, "Stop")
+  field(ONAM, "Start")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):CONFIG") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(008) $(PORT)")
+  field(ZNAM, "Serial")
+  field(ONAM, "Remote")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):SOFTSTART") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(100) $(PORT)")
+  field(ZNAM, "Stop")
+  field(ONAM, "Start")
+  info(autosaveFields, "VAL")
+}
+
+record(mbbo, "$(BASE):SP_TYPE") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writenum(101) $(PORT)")
+  field(ZRST, "Frequency")
+  field(ONST, "Current")
+  field(TWST, "Time")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(TWVL, "2")
+  field(FLNK, "$(BASE):SP_CALCDIS")
+  info(autosaveFields, "VAL")
+}
+
+record(calc, "$(BASE):SP_CALCDIS") {
+  field(INPA, "$(BASE):SP_TYPE NPP")
+  field(CALC, "1<<A")
+  field(FLNK, "$(BASE):SP_DIS")
+}
+
+record(mbboDirect, "$(BASE):SP_DIS") {
+  field(OMSL, "closed_loop")
+  field(DOL, "$(BASE):SP_CALCDIS NPP")
+  field(FLNK, "$(BASE):SP_WRITEVAL")
+}
+
+record(fanout, "$(BASE):SP_WRITEVAL") {
+  field(SELM, "All")	      
+  field(LNK1, "$(BASE):SP_FREQ")
+  field(LNK2, "$(BASE):SP_CURRENT")
+  field(LNK3, "$(BASE):SP_TIME")
+}
+
+record(ao, "$(BASE):SP_FREQ") {
+  field(SDIS, "$(BASE):SP_DIS.B0 NPP")
+  field(DISV, "0")
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writenum(102) $(PORT)")
+  field(EGU, "Hz")
+  info(autosaveFields, "VAL")
+}
+
+record(ao, "$(BASE):SP_CURRENT") {
+  field(SDIS, "$(BASE):SP_DIS.B1 NPP")
+  field(DISV, "0")
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writenum(102) $(PORT)")
+  field(EGU, "mA")
+  info(autosaveFields, "VAL")
+}
+
+record(ao, "$(BASE):SP_TIME") {
+  field(SDIS, "$(BASE):SP_DIS.B2 NPP")
+  field(DISV, "0")
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writenum(102) $(PORT)")
+  field(EGU, "s")
+  info(autosaveFields, "VAL")
+}
+
+record(ao, "$(BASE):SP_DELAY") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writenum(103) $(PORT)")
+  field(EGU, "s")
+  field(LOPR, "0")
+  field(HOPR, "99999")
+  field(DRVL, "0")
+  field(DRVH, "99999")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):SP_POLARITY") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(104) $(PORT)")
+  field(ZNAM, "ActiveHigh")
+  field(ONAM, "ActiveLow")
+  info(autosaveFields, "VAL")
+}
+
+record(ao, "$(BASE):SP_HYS") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writenum(105) $(PORT)")
+  field(EGU, "%")
+  field(LOPR, "0")
+  field(HOPR, "100")
+  field(DRVL, "0")
+  field(DRVH, "100")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):WATER_COOLING") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(106) $(PORT)")
+  field(ZNAM, "No")
+  field(ONAM, "Yes")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):ACTIVE_STOP") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(107) $(PORT)")
+  field(ZNAM, "No")
+  field(ONAM, "Yes")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):INTERLOCK_TYPE") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(110) $(PORT)")
+  field(ZNAM, "Impulse")
+  field(ONAM, "Continuous")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):AO_TYPE") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(111) $(PORT)")
+  field(ZNAM, "Frequency")
+  field(ONAM, "Power")
+  info(autosaveFields, "VAL")
+}
+
+record(ao, "$(BASE):ROT_FREQ") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writenum(120) $(PORT)")
+  field(EGU, "Hz")
+  field(LOPR, "150")
+  field(HOPR, "1010")
+  field(DRVL, "150")
+  field(DRVH, "1010")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):VENT_VALVE") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(122) $(PORT)")
+  field(ZNAM, "Open")
+  field(ONAM, "Closed")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):VENT_VALVE_OPERATION") {
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writelog(125) $(PORT)")
+  field(ZNAM, "Automatic")
+  field(ONAM, "OnCommand")
+  info(autosaveFields, "VAL")
+}
+
+record(ao, "$(BASE):VENT_VALVE_DELAY") {
+  field(EGU, "s")
+  field(LOPR, "0")
+  field(HOPR, "13107")
+  field(DRVL, "0")
+  field(DRVH, "13107")
+  info(autosaveFields, "VAL")
+  field(FLNK, "$(BASE):VENT_VALVE_RAW")
+}
+
+record(calcout, "$(BASE):VENT_VALVE_RAW") {
+  field(INPA, "$(BASE):VENT_VALVE_DELAY NPP")
+  field(CALC, "A*5")
+  field(OOPT, "Every Time")
+  field(DOPT, "Use CALC")
+  field(DTYP, "stream")
+  field(OUT, "@agilent.proto writenum(126) $(PORT)")
+}

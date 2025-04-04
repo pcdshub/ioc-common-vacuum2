@@ -1,0 +1,5 @@
+# Archive lsit for SRG3 watchdog
+# log the reset rate every minute and monitor for changes
+
+$(P):CheckRotPH	60	monitor
+

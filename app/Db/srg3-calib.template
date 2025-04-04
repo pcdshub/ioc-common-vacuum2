@@ -1,0 +1,367 @@
+#
+# Records to support calibration by gas type
+# of the raw SRG-3 Deceleration Rate
+#
+
+#
+# Calibration Conditions
+#
+
+record( ai, "$(P):Calib:BallDiameter" )
+{
+	field( DESC, "Calibrated Ball Diameter" )
+	field( INP,  "4.5" )
+	field( EGU,  "mm" )
+	field( PREC, "2" )
+	field( PINI, "YES" )
+}
+
+record( ai, "$(P):Calib:BallDensity" )
+{
+	field( DESC, "Calibrated Ball Density" )
+	field( INP,  "7.70" )
+	field( EGU,  "g/cm^3" )
+	field( PREC, "3" )
+	field( PINI, "YES" )
+}
+
+record( stringin, "$(P):Calib:Gas" )
+{
+	field( DESC, "Calibration Gas" )
+	field( INP,  "N2" )
+	field( PINI, "YES" )
+}
+
+record( longin, "$(P):Calib:Gas:Number" )
+{
+	field( DESC, "Calibration Gas" )
+	field( INP,  "19" )
+	field( PINI, "YES" )
+}
+
+record( ai, "$(P):Calib:Temp" )
+{
+	field( DESC, "Calibration Temp" )
+	field( INP,  "25" )
+	field( EGU,  "C" )
+	field( PREC, "2" )
+	field( PINI, "YES" )
+}
+
+record( ai, "$(P):Calib:Offset" )
+{
+	field( DESC, "Offset at Calibration" )
+	field( INP,  "5.9e-6" )
+	field( EGU,  "mbar" )
+	field( PREC, "2" )
+	field( PINI, "YES" )
+}
+
+#
+# Phyisikalisch-Technische Bundesanstalt Calibration Results
+# Accomodation Factors for each gas type
+#
+record( ai, "$(P):Calib:AccomFactor:He" )
+{
+	field( DESC, "He Accomodation Factor" )
+	field( INP,  "0.9477" )
+	field( EGU,  "" )
+	field( PREC, "4" )
+	field( PINI, "YES" )
+}
+
+record( ai, "$(P):Calib:AccomFactor:Ne" )
+{
+	field( DESC, "Ne Accomodation Factor" )
+	field( INP,  "0.9473" )
+	field( EGU,  "" )
+	field( PREC, "4" )
+	field( PINI, "YES" )
+}
+
+record( ai, "$(P):Calib:AccomFactor:N2" )
+{
+	field( DESC, "N2 Accomodation Factor" )
+	field( INP,  "0.9851" )
+	field( EGU,  "" )
+	field( PREC, "4" )
+	field( PINI, "YES" )
+}
+
+record( ai, "$(P):Calib:AccomFactor:Ar" )
+{
+	field( DESC, "He Accomodation Factor" )
+	field( INP,  "0.9918" )
+	field( EGU,  "" )
+	field( PREC, "4" )
+	field( PINI, "YES" )
+}
+
+record( ai, "$(P):Calib:AccomFactor:Kr" )
+{
+	field( DESC, "Kr Accomodation Factor" )
+	field( INP,  "1.0127" )
+	field( EGU,  "" )
+	field( PREC, "4" )
+	field( PINI, "YES" )
+}
+
+record( ai, "$(P):Calib:AccomFactor:Xe" )
+{
+	field( DESC, "Xe Accomodation Factor" )
+	field( INP,  "1.0281" )
+	field( EGU,  "" )
+	field( PREC, "4" )
+	field( PINI, "YES" )
+}
+
+record( sel, "$(P):Selected:Gas:AccomFactor" )
+{
+	field( SELM, "Specified" )
+	field( NVL,  "$(P):Selected:Gas:Name CP NMS" )
+	field( INPA, "$(P):Calib:AccomFactor:He" )
+	field( INPB, "$(P):Calib:AccomFactor:Ne" )
+	field( INPC, "$(P):Calib:AccomFactor:N2" )
+	field( INPD, "$(P):Calib:AccomFactor:Kr" )
+	field( INPE, "$(P):Calib:AccomFactor:Ar" )
+	field( INPF, "$(P):Calib:AccomFactor:Xe" )
+	field( DESC, "Relative Atomic Mass" )
+	field( PREC, "5" )
+	field( EGU,  "g/mol" )
+	field( PINI, "YES" )
+	field( FLNK, "$(P):AccomFactor:Fanout" )
+}
+
+record( dfanout, "$(P):AccomFactor:Fanout" )
+{
+	field( DOL,	 "$(P):Selected:Gas:AccomFactor" )
+	field( OMSL, "closed_loop" )
+	field( OUTA, "$(P):Calib:AccomFactor PP " )
+	field( OUTB, "$(P):SetAccomFactor PP " )
+}
+
+record( ai, "$(P):Calib:AccomFactor" )
+{
+	field( DESC, "Accom Factor for gas type" )
+	field( INP,  "0.9477" )
+	field( EGU,  "" )
+	field( PREC, "4" )
+	field( PINI, "YES" )
+}
+
+
+#
+# Gas Constants
+#
+record( ai, "$(P):Atomic:Weight:He" )
+{
+	field( DESC, "Relative Atomic Mass" )
+	field( INP,  "4.0026" )
+	field( PREC, "4" )
+	field( EGU,  "g/mol" )
+	field( DISA, "1" )
+}
+
+record( ai, "$(P):Atomic:Weight:Ne" )
+{
+	field( DESC, "Relative Atomic Mass" )
+	field( INP,  "20.179" )
+	field( PREC, "3" )
+	field( EGU,  "g/mol" )
+	field( DISA, "1" )
+}
+
+record( ai, "$(P):Atomic:Weight:N2" )
+{
+	field( DESC, "Relative Atomic Mass" )
+	field( INP,  "28.0134" )
+	field( PREC, "4" )
+	field( EGU,  "g/mol" )
+	field( DISA, "1" )
+}
+
+record( ai, "$(P):Atomic:Weight:Ar" )
+{
+	field( DESC, "Relative Atomic Mass" )
+	field( INP,  "39.948" )
+	field( PREC, "3" )
+	field( EGU,  "g/mol" )
+	field( DISA, "1" )
+}
+
+record( ai, "$(P):Atomic:Weight:Kr" )
+{
+	field( DESC, "Relative Atomic Mass" )
+	field( INP,  "83.380" )
+	field( PREC, "3" )
+	field( EGU,  "g/mol" )
+	field( DISA, "1" )
+}
+
+record( ai, "$(P):Atomic:Weight:Xe" )
+{
+	field( DESC, "Relative Atomic Mass" )
+	field( INP,  "131.29" )
+	field( PREC, "2" )
+	field( EGU,  "g/mol" )
+	field( DISA, "1" )
+}
+
+record( mbbi, "$(P):Selected:Gas:Name" )
+{
+	field( DTYP, "Raw Soft Channel" )
+	field( INP,  "$(P):GetGasType CP NMS" )
+	field( ZRVL, "17" )	field( ZRST, "He" )
+	field( ONVL, "21" )	field( ONST, "Ne" )
+	field( TWVL, "19" )	field( TWST, "N2" )
+	field( THVL, "3" )	field( THST, "Kr" )
+	field( FRVL, "10" )	field( FRST, "Ar" )
+	field( FVVL, "25" )	field( FVST, "Xe" )
+	field( SXVL, "9" )	field( SXST, "Air" )
+	field( UNSV, "MAJOR" )
+	field( FLNK, "$(P):Selected:Gas:Atomic:Weight PP" )
+	field( PINI, "YES" )
+}
+
+record( sel, "$(P):Selected:Gas:Atomic:Weight" )
+{
+	field( SELM, "Specified" )
+	field( NVL,  "$(P):Selected:Gas:Name" )
+	field( INPA, "$(P):Atomic:Weight:He" )
+	field( INPB, "$(P):Atomic:Weight:Ne" )
+	field( INPC, "$(P):Atomic:Weight:N2" )
+	field( INPD, "$(P):Atomic:Weight:Kr" )
+	field( INPE, "$(P):Atomic:Weight:Ar" )
+	field( INPF, "$(P):Atomic:Weight:Xe" )
+	field( DESC, "Relative Atomic Mass" )
+	field( PREC, "5" )
+	field( EGU,  "g/mol" )
+	field( PINI, "YES" )
+	field( FLNK, "$(P):Calib:K:Calc" )
+}
+
+
+record( ai, "$(P):GasConstant" )
+{
+	field( DESC, "R - Ideal Gas Constant" )
+	field( INP,  "8.3145" )
+	field( PREC, "5" )
+	field( EGU,  "J/(mol*K)" )
+	field( DISA, "1" )
+}
+
+#
+# Pressure Calculations
+#
+
+record( calc, "$(P):DecelRate:Gas" )
+{
+	field( DESC, "Decel due to Gas" )
+	field( INPA, "$(P):GetDecelRate CP MS" )
+	field( INPB, "$(P):SetZeroOffset CP MS")
+	field( CALC, "A - B" )
+	field( PREC, "4" )
+	field( EGU,  "1/sec" )
+	field( FLNK, "$(P):Calib:Pressure:Calc PP MS" )
+}
+
+#
+# Chamber Pressure
+#	= sqrt(8*R*T/pi*M) * ( pi * d * p / 20 / sigma ) * DecelRate:Gas
+# for
+# 	R = GasConstant
+#	T = Chamber Temp
+#	M = Atomic Weight of Selected Gas
+#	d = BallDiameter
+#	p = BallDensity
+#	sigma = Transfer Coefficient (Accomodation Factor)
+#			(From Rotor Ball Calibration Certificate)
+#	DecelRate:Gas = Zero adjusted deceleration rate due to presence of gas
+
+# Precalculated constants
+#	= (8*R/pi)
+record( calc, "$(P):PreCalc:1" )
+{
+	field( INPA, "$(P):GasConstant" )
+	field( CALC, "8 * A * 1000 / pi" )
+	field( PREC, "5" )
+	field( PINI, "YES" )
+	field( FLNK, "$(P):Calib:K:Calc" )
+}
+
+#	= ( pi * d * p / 20 )
+record( calc, "$(P):PreCalc:2" )
+{
+	field( INPA, "$(P):Calib:BallDiameter CP" )
+	field( INPB, "$(P):Calib:BallDensity CP" )
+	field( CALC, "pi * (A/1000) * (B*1000) / 20" )
+	field( PREC, "5" )
+	field( PINI, "YES" )
+	field( FLNK, "$(P):Calib:K:Calc" )
+}
+
+# Calculate Fini's K constant
+#	= sqrt(8*R*T/pi*M) * ( pi * d * p / 20 ) 
+#	= sqrt(PreCalc1*T/M) * PreCalc2 
+record( calcout, "$(P):Calib:K:Calc" )
+{
+	field( INPA, "$(P):PreCalc:1 NPP MS" )
+	field( INPB, "$(P):PreCalc:2 NPP MS" )
+#   field( INPC, "$(P):GetGasTemperature")
+    field( INPC, "22.0" )
+    field( INPD, "274.15" )
+	field( INPE, "$(P):Selected:Gas:Atomic:Weight NPP MS" )
+	field( CALC, "SQR(A*(C+D)/E)*B" )
+	field( PREC, "3" )
+	field( PINI, "YES" )
+	field( FLNK, "$(P):Calib:Pressure:Calc" )
+}
+
+# Do the pressure calculation
+#	= sqrt(8*R*T/pi*M) * ( pi * d * p / 20 / sigma ) * DecelRate:Gas
+#	= DecelRate:Gas * ( K / 100 ) / sigma
+record( calcout, "$(P):Calib:Pressure:Calc" )
+{
+	field( INPA, "$(P):Calib:AccomFactor CP MS" )
+	field( INPD, "$(P):DecelRate:Gas NPP MS" )
+	field( INPK, "$(P):Calib:K:Calc NPP MS" )
+	field( CALC, "D*(K/100)/A" )
+	field( PREC, "4" )
+	field( EGU,  "mbar" )
+	field( FLNK, "$(P):Calib:Pressure:Pa PP MS" )
+	info( autosaveFields, "HIHI HIGH LOW LOLO HHSV HSV LSV LLSV" )
+}
+
+# Convert pressure from mbar to Pa
+record( calc, "$(P):Calib:Pressure:Pa" )
+{
+	field( DESC, "Pressure in Torr" )
+	field( INPA, "$(P):Calib:Pressure:Calc NPP MS" )
+	field( INPB, "100" )
+	field( CALC, "A * B" )
+	field( EGU,  "Pa" )
+	field( PREC, "4" )
+	field( FLNK, "$(P):Calib:Pressure PP MS" )
+}
+
+# Convert pressure from mbar to Torr
+record( calc, "$(P):Calib:Pressure" )
+{
+	field( DESC, "Pressure in Torr" )
+	field( INPA, "$(P):Calib:Pressure:Calc NPP MS" )
+	field( INPB, "0.7500616827" )
+	field( CALC, "A * B" )
+	field( EGU,  "T" )
+	field( PREC, "4" )
+	field( FLNK, "$(P):Calib:Pressure:Smoothed PP MS" )
+}
+
+# Smoothed pressure in Torr
+record( ai, "$(P):Calib:Pressure:Smoothed" )
+{
+	field( DESC, "Pressure in Torr" )
+	field( INP,  "$(P):Calib:Pressure NPP MS" )
+	field( SMOO, "0.995" )
+	field( EGU,  "T" )
+	field( PREC, "4" )
+}

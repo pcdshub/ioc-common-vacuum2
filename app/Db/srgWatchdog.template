@@ -1,0 +1,83 @@
+# This DB file check the spinning rotor of the SRG is spinning.  If
+# the rotor stops spinning, the watchdog restarts it. There is also a
+# another record that measures how often the rotor is restarted.  If
+# the rate is too high, it sets an alarm
+
+record(calcout, "$(P):AutoRestartOffCalc")
+{
+	field(DESC, "Disable AutoRestart on StopSensor")
+	field(INPA, "$(P):StopSensor CP NMS")
+	field(CALC, "A==1 ? 0 : 1")
+	field(OUT,  "$(P):AutoRestartEnable PP")
+	field(OOPT, "When Zero")
+}
+
+record(calcout, "$(P):AutoRestartOnCalc")
+{
+	field(DESC, "Check SRG is spinning")
+	field(INPA, "$(P):StartMeasurement CP NMS")
+	field(CALC, "A")
+	field(OUT,  "$(P):AutoRestartEnable PP")
+	field(OOPT, "When Non-zero")
+}
+
+record(bo, "$(P):AutoRestartEnable")
+{
+    field(DESC, "Enable auto-restarts")
+    field(ZNAM, "Disabled")
+    field(ONAM, "Enabled")
+}
+
+# Check if SRG has stopped spining
+# - checks rate and gradient is negative
+# This avoids false positives when the rotors starts to spin up
+# and avoids auto-start when ioc boots
+record(calcout, "$(P):CheckRot")
+{
+	field(DESC, "Check SRG is spinning")
+	field(INPA, "$(P):GetRotSpeed")
+	field(INPB, "$(P):CheckRot.LA")
+	field(INPC, "$(P):GetLowerSpeedLimit")
+	field(INPD, "$(P):AutoRestartEnable")
+	field(CALC, "D&&(A<(0.9*C))&&((A-B) < 0.0)")
+	field(SCAN, "1 second")
+	field(OUT,  "$(P):RestartMeas PP")
+	field(OOPT, "When Non-zero")
+	field(FLNK, "$(P):CheckRotBuff")
+}
+
+# Set up circular buffer to store last 1200 values of $(P):CheckRot
+# this corresponds to a buffer of 1200/60 = 20 minutes
+record(compress, "$(P):CheckRotBuff")
+{
+	field(DESC, "Check Rotation Buffer")
+	field(ALG,  "Circular Buffer")
+	field(NSAM, "1200")
+	field(INP,  "$(P):CheckRot")
+	field(FLNK, "$(P):CheckRotAvg")
+}
+
+# Average of $(P):CheckRotBuff
+# Ths is the running average over last 20 minutes of $(P):CheckRot
+record(compress, "$(P):CheckRotAvg")
+{
+	field(DESC, "Running average of SRG restart")
+	field(ALG,  "N to 1 Average")
+	field(NSAM, "1")
+	field(N,    "1200")
+	field(INP,  "$(P):CheckRotBuff")
+	field(FLNK, "$(P):CheckRotPH")
+}
+
+
+# Convert $(P):CheckRotBuff to SRG restarts per hour
+# Set HI and HIHI alarms when SRG restart rate is too high
+record(calc, "$(P):CheckRotPH")
+{
+	field(DESC, "SRG restarts per hour")
+	field(INPA, "$(P):CheckRotAvg")
+	field(CALC, "A * 3600")
+	field(HHSV, "MAJOR")
+	field(HIHI, "4.0")
+}
+

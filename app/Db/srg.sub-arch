@@ -1,0 +1,24 @@
+file srg3.tpl-arch {
+    { P = "$(BASE)" }
+}
+
+file history.tpl-arch
+{
+	pattern
+	{	PV					}
+	{	"$(BASE):GetGasTemperature"		}
+	{	"$(BASE):Calib:Pressure"		}
+	{	"$(BASE):Calib:Pressure:Calc"		}
+	{	"$(BASE):Calib:Pressure:Pa"		}
+	{	"$(BASE):Calib:Pressure:Smoothed"	}
+	{	"$(BASE):GetDecelRate"			}
+	{	"$(BASE):DecelRate:Gas"			}
+	{	"$(BASE):GetRawPressure"		}
+	{	"$(BASE):GetRemainingTime"		}
+	{	"$(BASE):GetRotSpeed"			}
+	{	"$(BASE):GetSignalLevel"		}
+}
+
+file srgWatchdog.tpl-arch {
+    { P = "$(BASE)" }
+}

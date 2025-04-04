@@ -1,0 +1,118 @@
+# Macros expected:
+#     BASE    - Base PV of controller.
+#     PORT    - Asyn port.
+
+record(stringin, "$(BASE):MODEL") {
+  field(DESC, "Get Model")
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getModel $(PORT)")
+  field(PINI, "YES")
+}
+
+record(stringin, "$(BASE):FWVERSION") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getFirmware $(PORT)")
+  field(PINI, "YES")
+}
+
+record(bo, "$(BASE):ASHVEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setAutostartHVE $(PORT)")
+  field(ZNAM, "DISABLE")
+  field(ONAM, "ENABLE")
+  field(ASG, "VACWRITE")
+  field(FLNK, "$(BASE):ASHVE")
+  info(autosaveFields, "VAL")
+}
+
+record(bi, "$(BASE):ASHVE") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getAutostartHVE $(PORT)")
+  field(ZNAM, "DISABLED")
+  field(ONAM, "ENABLED")
+  field(ZSV, "NO_ALARM")
+  field(OSV, "MAJOR")
+  field(PINI, "YES")
+}
+
+record(bo, "$(BASE):ASPOWERDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setAutostartPower $(PORT)")
+  field(ZNAM, "DISABLE")
+  field(ONAM, "ENABLE")
+  field(ASG, "VACWRITE")
+  field(FLNK, "$(BASE):ASPOWER")
+  info(autosaveFields, "VAL")
+}
+
+record(bi, "$(BASE):ASPOWER") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getAutostartPower $(PORT)")
+  field(ZNAM, "DISABLED")
+  field(ONAM, "ENABLED")
+  field(ZSV, "NO_ALARM")
+  field(OSV, "MAJOR")
+  field(PINI, "YES")
+}
+
+record(mbbo, "$(BASE):PEGUDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setPressunits $(PORT)")
+  field(ZRST, "TORR")
+  field(ONST, "MBR")
+  field(TWST, "PA")
+  field(ASG, "VACWRITE")
+  info(autosaveFields, "VAL")
+}
+
+#
+# Write a one to this to do a reset.
+#
+record(bo, "$(BASE):MASTERRESET") {
+  field(ZNAM, "Normal")
+  field(ONAM, "RESET")
+  field(ZSV, "NO_ALARM")
+  field(OSV, "MAJOR")
+  field(ASG, "VACWRITE")
+  field(HIGH, "1")
+  field(PINI, "YES")
+  field(FLNK, "$(BASE):DO_RESET")
+}
+
+record(calcout, "$(BASE):DO_RESET") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db masterReset $(PORT)")
+  field(INPA, "$(BASE):MASTERRESET NPP NMS")
+  field(CALC, "A")
+  field(OOPT, "When Non-zero")
+}
+
+record(bo, "$(BASE):FAN") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setFan($(CHANNEL)) $(PORT)")
+  field(ASG, "VACWRITE")
+  field(ZNAM, "OFF")
+  field(ONAM, "ON")
+  field(FLNK, "$(BASE):FANMON PP")
+  info(autosaveFields, "VAL")
+}
+
+record(bi, "$(BASE):FANMON") {
+  field(PINI, "YES")
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getFan($(CHANNEL)) $(PORT)")
+  field(SCAN, "Passive")
+  field(ASG, "VACWRITE")
+  field(ZNAM, "OFF")
+  field(ONAM, "ON")
+  info(autosaveFields, "VAL")
+}
+
+record(bo, "$(BASE):KEYPAD") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setKeypadlock($(CHANNEL)) $(PORT)")
+  field(ASG, "VACWRITE")
+  field(ZNAM, "OFF")
+  field(ONAM, "ON")
+  info(autosaveFields, "VAL")
+}

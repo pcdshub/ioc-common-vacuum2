@@ -1,0 +1,7 @@
+record(ao, "$(BASE):FETCH_TEMP") {
+    field(DISA, "1")
+    field(DOL, "$(TEMP) CPP NMS")
+    field(OUT, "$(BASE):SetGasTemperature PP")
+    field(OMSL, "closed_loop")
+    info(autosaveFields, "DISA")
+}

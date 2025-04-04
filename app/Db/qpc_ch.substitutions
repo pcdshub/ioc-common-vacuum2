@@ -1,0 +1,17 @@
+# Macros expected:
+#     BASE       - Base PV of this channel.
+#     PORT       - Asyn port.
+#     CONTROLLER - Base PV of the controller.
+#     CHANNEL    - Channel number, 1-4.  This is also the relay setpoint number.
+#     TTLCHAN    - Channel number + 4.  This is the TTL setpoint number.
+
+file qpc_ch.template {
+     { BASE = "$(BASE)" }
+}
+
+file qpc_ch_setpoint.template {
+     pattern
+     { SPNAME ,  SETPOINT    }
+     { "RELAY", "$(CHANNEL)" }
+     { "TTL"  , "$(TTLCHAN)" }
+}

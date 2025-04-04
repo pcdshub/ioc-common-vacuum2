@@ -1,0 +1,1736 @@
+# Record Database template for MKS SRG-3 Spinning Rotor Gauge System
+# Author: Karl Gumerlock (klg@slac.stanford.edu)
+
+### Debug record
+# Put a string to this record, and it will be sent as a command directly to the
+# instrument. Read the value to see the response from the instrument.
+record(stringout, "$(P):SendDebug") {
+    field(DESC, "Send debug command")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto sendDebug() $(P)")
+}
+
+
+##### GAS PARAMETER COMMANDS #####
+### Atomic Mass Units AMU
+record(ai, "$(P):GetGasMolMass") {
+    field(DESC, "Get mean molecular mass")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(AMU) $(P)")
+    field(EGU,  "u")
+    field(PREC, "4" )
+	field( LOW, 20 )
+	field( LSV, "MINOR" )
+}
+
+record(ao, "$(P):SetGasMolMass") {
+    field(DESC, "Set mean molecular mass")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(AMU) $(P)")
+    field(EGU,  "u")
+    field(DRVH, "1000")
+    field(DRVL, "1")
+    field(FLNK, "$(P):GetGasMolMass")
+	field( LOW, 20 )
+	field( LSV, "MINOR" )
+    info(autosaveFields, "VAL")
+}
+
+### Gas Type GAS
+# TODO: string decoder records (use GLB?)
+record(longin, "$(P):GetGasType") {
+    field(DESC, "Get gas type")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(GAS) $(P)")
+}
+
+record(longout, "$(P):SetGasType") {
+    field(DESC, "Set gas type")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(GAS) $(P)")
+    field(DRVH, "25")
+    field(DRVL, "1")
+    field(FLNK, "$(P):UpdateAll:F1:GasType")
+    info(autosaveFields, "VAL")
+}
+
+# Temperature coefficient of viscosity TCO
+record(ai, "$(P):GetGasTempCoeff") {
+    field(DESC, "Get temp. coeff. of visc.")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(TCO) $(P)")
+    field(EGU,  "uPa*s/K")
+    field(PREC, "4" )
+}
+
+record(ao, "$(P):SetGasTempCoeff") {
+    field(DESC, "Set temp. coeff. of visc.")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(TCO) $(P)")
+    field(EGU,  "uPa*s/K")
+    field(DRVH, "0.1")
+    field(DRVL, "0")
+    field(FLNK, "$(P):GetGasTempCoeff")
+    info(autosaveFields, "VAL")
+}
+
+# Temperature TMP
+record(ai, "$(P):GetGasTemperature") {
+    field(DESC, "Get actual gas temperature")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(TMP) $(P)")
+	field( PREC, "1" )
+	field( EGU,  "C" )
+	field( LOW,  19 )
+	field( LOLO, 17 )
+	field( HIGH, 22 )
+	field( HIHI, 24 )
+	field( LSV,  "MINOR" )
+	field( LLSV, "MAJOR" )
+	field( HSV,  "MINOR" )
+	field( HHSV, "MAJOR" )
+}
+
+record(ao, "$(P):SetGasTemperature") {
+    field(DESC, "Set manual gas temperature")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(TMP) $(P)")
+	field( PREC, "1" )
+	field( EGU,  "C" )
+    info(autosaveFields, "VAL")
+}
+
+# Viscosity VIS
+record(ai, "$(P):GetGasViscosity") {
+    field(DESC, "Get gas viscosity")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(VIS) $(P)")
+    field(PREC, "4" )
+}
+
+record(ao, "$(P):SetGasViscosity") {
+    field(DESC, "Set gas viscosity")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(VIS) $(P)")
+    field(FLNK, "$(P):GetGasViscosity")
+    info(autosaveFields, "VAL")
+}
+
+
+
+### USER GAS DEFINITIONS ###
+# Query gas label GLB
+record(stringin, "$(P):GetGasLabel") {
+    field(DESC, "Get current gas label")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(GLB) $(P)")
+}
+
+# TODO: GLB outputs
+
+
+# Save as user gas type USR
+# TODO: save as user gas type (separate records?)
+
+
+# Reset user definitions USR
+# TODO: wrap into above USR?
+
+
+
+### SENSOR PARAMETERS ###
+
+# Accommodation Factor ACC
+record(ai, "$(P):GetAccomFactor") {
+    field(DESC, "Get accomm. factor")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(ACC) $(P)")
+    field(PREC, "5" )
+}
+
+record(ao, "$(P):SetAccomFactor") {
+    field(DESC, "Set accomm. factor")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(ACC) $(P)")
+    field(DRVH, "2")
+    field(DRVL, "0.1")
+    field(FLNK, "$(P):GetAccomFactor")
+    field(PREC, "5" )
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# Automatic start AUT
+record(bi, "$(P):GetAutoStart") {
+    field(DESC, "Get auto start enable")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(AUT) $(P)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bo, "$(P):SetAutoStart") {
+    field(DESC, "Set auto start enable")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(AUT) $(P)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(FLNK, "$(P):GetAutoStart")
+}
+
+# Background average BGA
+record(longin, "$(P):GetBGAvgSpan") {
+    field(DESC, "Get BG average span")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(BGA) $(P)")
+    field(EGU,  "readings")
+}
+
+record(longout, "$(P):SetBGAvgSpan") {
+    field(DESC, "Set BG average span")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(BGA) $(P)")
+    field(EGU,  "readings")
+    field(DRVL, "0")
+    field(DRVH, "50")
+    field(FLNK, "$(P):GetBGAvgSpan")
+    info(autosaveFields, "VAL")
+}
+
+# Ball density DEN
+record(ai, "$(P):GetBallDensity") {
+    field(DESC, "Get ball density")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(DEN) $(P)")
+    field(EGU,  "g/cm^3")
+    field(PREC, "3" )
+}
+
+record(ao, "$(P):SetBallDensity") {
+    field(DESC, "Set ball density")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(DEN) $(P)")
+    field(EGU,  "g/cm^3")
+    field(DRVL, "6")
+    field(DRVH, "10")
+    field(PREC, "3" )
+    field(FLNK, "$(P):GetBallDensity")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# Ball diameter DIA
+record(ai, "$(P):GetBallDiameter") {
+    field(DESC, "Get ball diameter")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(DIA) $(P)")
+    field(EGU,  "mm")
+    field(PREC, "4" )
+}
+
+record(ao, "$(P):SetBallDiameter") {
+    field(DESC, "Set ball diameter")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(DIA) $(P)")
+    field(EGU,  "mm")
+    field(DRVL, "1")
+    field(DRVH, "6")
+    field(PREC, "4" )
+    field(PINI, "YES")
+    field(FLNK, "$(P):GetBallDiameter")
+    info(autosaveFields, "VAL")
+}
+
+# Lower Speed Limit LSP
+record(ai, "$(P):GetLowerSpeedLimit") {
+    field(DESC, "Get lower speed limit")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(LSP) $(P)")
+    field(EGU,  "Hz")
+	field( PREC, 2 )
+}
+
+record(ao, "$(P):SetLowerSpeedLimit") {
+    field(DESC, "Set lower speed limit")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(LSP) $(P)")
+    field(EGU,  "Hz")
+	field( PREC, 2 )
+    field(DRVL, "405")
+    field(DRVH, "805")
+    field(FLNK, "$(P):GetLowerSpeedLimit")
+    info(autosaveFields, "VAL")
+}
+
+# Measure time MTI
+record(ai, "$(P):GetMeasureTime") {
+    field(DESC, "Get actual measure time")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(MTI) $(P)")
+    field(EGU,  "s")
+    field(PREC, "4" )
+}
+
+record(ao, "$(P):SetMeasureTime") {
+    field(DESC, "Set measure time")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(MTI) $(P)")
+    field(EGU,  "s")
+    field(DRVL, "5")
+    field(DRVH, "60")
+    field(PREC, "1")
+    field(FLNK, "$(P):GetMeasureTime")
+    info(autosaveFields, "VAL")
+}
+
+# Zero offset OFS
+# Returns a value in the selected unit (see UNT)
+record(ai, "$(P):GetZeroOffset") {
+    field(DESC, "Get zero offset")
+    field(DTYP, "stream")
+    field(EGU,  "sec^-1")
+    field(INP,  "@srg3.proto readFloat(OFS) $(P)")
+    field(PREC, "4" )
+}
+
+record(ao, "$(P):SetZeroOffset") {
+    field(DESC, "Set zero offset")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(OFS) $(P)")
+    field(DRVL, "0")
+    field(DRVH, "1000")
+    field(EGU,  "sec^-1")
+    field(PREC, "4" )
+    field(PINI, "YES")
+    field(FLNK, "$(P):GetZeroOffset")
+    info(autosaveFields, "VAL")
+}
+
+
+# Copy GetDecelRate to SetZeroOffset
+record( dfanout, "$(P):ApplyZeroOffset" )
+{
+    field( DESC, "Copy GetDecelRate to SetZeroOffset" )
+    field( OMSL, "closed_loop" )
+    field( DOL,  "$(P):GetDecelRate NPP" )
+    field( OUTA, "$(P):SetZeroOffset PP" )
+}
+
+
+
+# Speed control mode SPC
+record(mbbi, "$(P):GetSpeedCtlMode") {
+    field(DESC, "Get speed control mode")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(SPC) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "Manual" )
+    field(ONST, "Spd Limits" )
+    field(TWST, "Fixed Time" )
+}
+
+record(mbbo, "$(P):SetSpeedCtlMode") {
+    field(DESC, "Set speed control mode")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(SPC) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+#    field(ZRST, "OFF")
+#    field(ONST, "AUTO/SPDLIM FIX")
+#    field(TWST, "AUTO/MEAS_T FIX")
+    field(ZRST, "Manual" )
+    field(ONST, "Spd Limits" )
+    field(TWST, "Fixed Time" )
+    field(FLNK, "$(P):GetSpeedCtlMode")
+    info(autosaveFields, "VAL")
+}
+
+# Upper Speed Limit USP
+record(ai, "$(P):GetUpperSpeedLimit") {
+    field(DESC, "Get upper speed limit")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(USP) $(P)")
+    field(EGU,  "Hz")
+	field( PREC, 2 )
+}
+
+record(ao, "$(P):SetUpperSpeedLimit") {
+    field(DESC, "Set upper speed limit")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(USP) $(P)")
+    field(EGU,  "Hz")
+	field( PREC, 2 )
+    field(DRVL, "410")
+    field(DRVH, "810")
+    field(FLNK, "$(P):GetUpperSpeedLimit")
+    info(autosaveFields, "VAL")
+}
+
+
+
+### READOUT SETTINGS ###
+
+# TODO: Set date?
+
+# Decimal places of pressure readout DPL
+record(mbbi, "$(P):GetDecimalPlaces") {
+    field(DESC, "Get # decimal places")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(DPL) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(FRVL, "4")
+    field(ZRST, "AUTO")
+    field(ONST, "1")
+    field(TWST, "2")
+    field(THST, "3")
+    field(FRST, "4")
+}
+
+record(mbbo, "$(P):SetDecimalPlaces") {
+    field(DESC, "Set # decimal places")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(DPL) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(FRVL, "4")
+    field(ZRST, "AUTO")
+    field(ONST, "1")
+    field(TWST, "2")
+    field(THST, "3")
+    field(FRST, "4")
+    field(FLNK, "$(P):GetDecimalPlaces")
+    info(autosaveFields, "VAL")
+}
+
+# Menu timeout DTO
+record(longin, "$(P):GetMenuTimeout") {
+    field(DESC, "Get menu timeout")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(DTO) $(P)")
+    field(EGU,  "s")
+}
+
+record(longout, "$(P):SetMenuTimeout") {
+    field(DESC, "Set menu timeout")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(DTO) $(P)")
+    field(EGU,  "s")
+    field(DRVL, "5")
+    field(DRVH, "60")
+    field(FLNK, "$(P):GetMenuTimeout")
+    info(autosaveFields, "VAL")
+}
+
+# SI Option OPT
+record(bi, "$(P):GetInstOptions") {
+    field(DESC, "Get instrument options")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(OPT) $(P)")
+    field(ZNAM, "RESET")
+    field(ONAM, "SI ONLY")
+}
+
+record(bo, "$(P):SetInstOptions") {
+    field(DESC, "Set instrument options")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(OPT) $(P)")
+    field(ZNAM, "RESET")
+    field(ONAM, "SI ONLY")
+    field(FLNK, "$(P):GetInstOptions")
+}
+
+# TODO: Set time???
+
+# Temperature scale TSC
+record(bi, "$(P):GetTempUnits") {
+    field(DESC, "Get temperature units")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(TSC) $(P)")
+    field(ZNAM, "K")
+    field(ONAM, "C")
+}
+
+record(bo, "$(P):SetTempUnits") {
+    field(DESC, "Set temperature units")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(TSC) $(P)")
+    field(ZNAM, "K")
+    field(ONAM, "C")
+    field(FLNK, "$(P):GetTempUnits")
+}
+
+# Pressure measurement unit UNT
+# 0 is Raw Deceleration Rate (DCR)
+record(mbbi, "$(P):GetPressUnits") {
+    field(DESC, "Get pressure units")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(UNT) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(ZRST, "sec^-1")
+    field(ONST, "Pa")
+    field(TWST, "mbar")
+    field(THST, "Torr")
+}
+
+record(mbbo, "$(P):SetPressUnits") {
+    field(DESC, "Set pressure units")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(UNT) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(ZRST, "s^-1 (DCR)^1")
+    field(ONST, "Pa")
+    field(TWST, "mbar")
+    field(THST, "Torr")
+    field(FLNK, "$(P):GetPressUnits")
+    info(autosaveFields, "VAL")
+}
+
+
+
+### PRINTER SETTINGS ###
+
+# Maximum count CNT
+record(ai, "$(P):GetPrintMaxCount") {
+    field(DESC, "Get printing max count")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(CNT) $(P)")
+}
+
+record(ao, "$(P):SetPrintMaxCount") {
+    field(DESC, "Set printing max count")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(CNT) $(P)")
+    field(DRVL, "0")
+    field(DRVH, "100")
+    field(FLNK, "$(P):GetPrintMaxCount")
+}
+
+# Printout data option PDA
+record(mbbi, "$(P):GetPrintDataOption") {
+    field(DESC, "Get printing data option")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(PDA) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(ZRST, "STANDARD")
+    field(ONST, "AUX 1 & MEAS")
+    field(TWST, "AUX 2 & MEAS")
+    field(THST, "T&SETPT&MEAS")
+}
+
+record(mbbo, "$(P):SetPrintDataOption") {
+    field(DESC, "Set printing data option")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(PDA) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(ZRST, "STANDARD")
+    field(ONST, "AUX 1 & MEAS")
+    field(TWST, "AUX 2 & MEAS")
+    field(THST, "T&SETPT&MEAS")
+    field(FLNK, "$(P):GetPrintDataOption")
+}
+
+# Page eject option PEJ
+record(bi, "$(P):GetPrintPageEject") {
+    field(DESC, "Get printing page eject")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(PEJ) $(P)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bo, "$(P):SetPrintPageEJect") {
+    field(DESC, "set printing page eject")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(PEJ) $(P)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(FLNK, "$(P):GetPrintPageEject")
+}
+
+# Printout footer option PFT
+record(mbbi, "$(P):GetPrintFooter") {
+    field(DESC, "Get printing footer option")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(PFT) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "NO FOOTER")
+    field(ONST, "STD FOOTER")
+    field(TWST, "CNT ONLY")
+}
+
+record(mbbo, "$(P):SetPrintFooter") {
+    field(DESC, "Set printing footer option")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(PFT) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "NO FOOTER")
+    field(ONST, "STD FOOTER")
+    field(TWST, "CNT ONLY")
+    field(FLNK, "$(P):GetPrintFooter")
+}
+
+# Printout header option PHD
+record(mbbi, "$(P):GetPrintHeader") {
+    field(DESC, "Get printing header option")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(PHD) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "NO HEADER")
+    field(ONST, "STD HEADER")
+    field(TWST, "COL TITLES")
+}
+
+record(mbbo, "$(P):SetPrintHeader") {
+    field(DESC, "Set printing header option")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(PHD) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "NO HEADER")
+    field(ONST, "STD HEADER")
+    field(TWST, "COL TITLES")
+    field(FLNK, "$(P):GetPrintHeader")
+}
+
+# Printing interval PIN
+record(longin, "$(P):GetPrintInterval") {
+    field(DESC, "Get printing interval")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(PIN) $(P)")
+    field(EGU,  "min")
+}
+
+record(longout, "$(P):SetPrintInterval") {
+    field(DESC, "Set printing interval")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(PIN) $(P)")
+    field(EGU,  "min")
+    field(DRVL, "0")
+    field(DRVH, "300")
+    field(FLNK, "$(P):GetPrintInterval")
+}
+
+# Printer port PPT
+record(mbbi, "$(P):GetPrintPort") {
+    field(DESC, "Get printer port")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(PPT) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "DISABLED")
+    field(ONST, "PARALLEL")
+    field(TWST, "SERIAL")
+}
+
+record(mbbo, "$(P):SetPrintPort") {
+    field(DESC, "Set printer port")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(PPT) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "DISABLED")
+    field(ONST, "PARALLEL")
+    field(TWST, "SERIAL")
+    field(FLNK, "$(P):GetPrintPort")
+}
+
+
+### OUTPUT CONFIGURATION ###
+
+# Analog output full scale AFS
+record(ai, "$(P):GetAnalogOutScale") {
+    field(DESC, "Get analog output full scale")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(AFS) $(P)")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):SetAnalogOutScale") {
+    field(DESC, "Set analog output full scale")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(AFS) $(P)")
+    field(DRVL, "1e-08")
+    field(DRVH, "1e+03")
+    field(FLNK, "$(P):GetAnalogOutScale")
+    field(PREC, "2" )
+    info(autosaveFields, "VAL")
+}
+
+# Analog output span ASP
+record(ai, "$(P):GetAnalogOutSpan") {
+    field(DESC, "Get analog output span")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(ASP) $(P)")
+    field(EGU,  "decades")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):SetAnalogOutSpan") {
+    field(DESC, "Set analog output span")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(ASP) $(P)")
+    field(EGU,  "decades")
+    field(DRVL, "1")
+    field(DRVH, "10")
+    field(FLNK, "$(P):GetAnalogOutSpan")
+    field(PREC, "2" )
+    info(autosaveFields, "VAL")
+}
+
+# SP1 hysteresis HS1
+record(ai, "$(P):SP1:GetHyst") {
+    field(DESC, "Get SP1 hysteresis")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(HS1) $(P)")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):SP1:SetHyst") {
+    field(DESC, "Set SP1 hysteresis")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(HS1) $(P)")
+    field(DRVL, "-0.5")
+    field(DRVH, "1")
+    field(PREC, "2" )
+    field(FLNK, "$(P):SP1:GetHyst")
+    info(autosaveFields, "VAL")
+}
+
+# SP2 hysteresis HS2
+record(ai, "$(P):SP2:GetHyst") {
+    field(DESC, "Get SP2 hysteresis")
+    field(DTYP, "stream")
+    field(PREC, "2" )
+    field(INP,  "@srg3.proto readFloat(HS2) $(P)")
+}
+
+record(ao, "$(P):SP2:SetHyst") {
+    field(DESC, "Set SP2 hysteresis")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(HS2) $(P)")
+    field(DRVL, "-0.5")
+    field(DRVH, "1")
+    field(PREC, "2" )
+    field(FLNK, "$(P):SP2:GetHyst")
+    info(autosaveFields, "VAL")
+}
+
+# SP1 trip point SP1
+record(ai, "$(P):SP1:GetTripPoint") {
+    field(DESC, "Get SP1 trip point")
+    field(DTYP, "stream")
+    field(PREC, "2" )
+    field(INP,  "@srg3.proto readFloat(SP1) $(P)")
+}
+
+record(ao, "$(P):SP1:SetTripPoint") {
+    field(DESC, "Set SP1 trip point")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(SP1) $(P)")
+    field(DRVL, "1e-08")
+    field(DRVH, "1e+03")
+    field(PREC, "2" )
+    field(FLNK, "$(P):SP1:GetTripPoint")
+    info(autosaveFields, "VAL")
+}
+
+# SP2 trip point SP2
+record(ai, "$(P):SP2:GetTripPoint") {
+    field(DESC, "Get SP2 trip point")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(SP2) $(P)")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):SP2:SetTripPoint") {
+    field(DESC, "Set SP2 trip point")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(SP2) $(P)")
+    field(DRVL, "1e-08")
+    field(DRVH, "1e+03")
+    field(PREC, "2" )
+    field(FLNK, "$(P):SP2:GetTripPoint")
+    info(autosaveFields, "VAL")
+}
+
+
+
+### AUXILIARTY INPUT CONFIGURATION ###
+
+# Auxiliary channel 1 mode AM1
+record(mbbi, "$(P):AUX1:GetMode") {
+    field(DESC, "Get AUX1 mode")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(AM1) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(ZRST, "RAW [V]")
+    field(ONST, "TEMPERATURE")
+    field(TWST, "PRESSURE")
+    field(THST, "SPECIAL")
+}
+
+record(mbbo, "$(P):AUX1:SetMode") {
+    field(DESC, "Set AUX1 mode")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(AM1) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(ZRST, "RAW [V]")
+    field(ONST, "TEMPERATURE")
+    field(TWST, "PRESSURE")
+    field(THST, "SPECIAL")
+    field(FLNK, "$(P):AUX1:GetMode")
+    info(autosaveFields, "VAL")
+}
+
+# Auxiliary channel 2 mode AM2
+record(mbbi, "$(P):AUX2:GetMode") {
+    field(DESC, "Get AUX2 mode")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(AM2) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(ZRST, "RAW [V]")
+    field(ONST, "TEMPERATURE")
+    field(TWST, "PRESSURE")
+    field(THST, "SPECIAL")
+}
+
+record(mbbo, "$(P):AUX2:SetMode") {
+    field(DESC, "Set AUX2 mode")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(AM2) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(THVL, "3")
+    field(ZRST, "RAW [V]")
+    field(ONST, "TEMPERATURE")
+    field(TWST, "PRESSURE")
+    field(THST, "SPECIAL")
+    field(FLNK, "$(P):AUX2:GetMode")
+    info(autosaveFields, "VAL")
+}
+
+# Auxiliary channel 1 offset AO1
+record(ai, "$(P):AUX1:GetOffset") {
+    field(DESC, "Get AUX1 offset")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(AO1) $(P)")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):AUX1:SetOffset") {
+    field(DESC, "Set AUX1 offset")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(AO1) $(P)")
+    field(DRVL, "-1e+30")
+    field(DRVH, "1e+30")
+    field(PREC, "2" )
+    field(FLNK, "$(P):AUX1:GetOffset")
+    info(autosaveFields, "VAL")
+}
+
+# Auxiliary channel 2 offset AO2
+record(ai, "$(P):AUX2:GetOffset") {
+    field(DESC, "Get AUX2 offset")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(AO2) $(P)")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):AUX2:SetOffset") {
+    field(DESC, "Set AUX2 offset")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(AO2) $(P)")
+    field(DRVL, "-1e+30")
+    field(DRVH, "1e+30")
+    field(PREC, "2" )
+    field(FLNK, "$(P):AUX2:GetOffset")
+    info(autosaveFields, "VAL")
+}
+
+# Auxiliary channels power supply APW
+record(bi, "$(P):GetAuxPowerSupply") {
+    field(DESC, "Get aux power supply")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(APW) $(P)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+record(bo, "$(P):SetAuxPowerSupply") {
+    field(DESC, "Set aux power supply")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(APW) $(P)")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(FLNK, "$(P):GetAuxPowerSupply")
+}
+
+# Auxiliary channel 1 scale factor AS1
+record(ai, "$(P):AUX1:GetScale") {
+    field(DESC, "Get AUX1 scale factor")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(AS1) $(P)")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):AUX1:SetScale") {
+    field(DESC, "Get AUX1 scaled factor")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(AS1) $(P)")
+    field(DRVL, "1e-30")
+    field(DRVH, "1e+30")
+    field(PREC, "2" )
+    field(FLNK, "$(P):AUX1:GetScale")
+    info(autosaveFields, "VAL")
+}
+
+# Auxiliary channel 2 scale factor AS2
+record(ai, "$(P):AUX2:GetScale") {
+    field(DESC, "Get AUX2 scale factor")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(AS2) $(P)")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):AUX2:SetScale") {
+    field(DESC, "Get AUX2 scaled factor")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(AS2) $(P)")
+    field(DRVL, "1e-30")
+    field(DRVH, "1e+30")
+    field(PREC, "2" )
+    field(FLNK, "$(P):AUX2:GetScale")
+    info(autosaveFields, "VAL")
+}
+
+
+### SERIAL COMM SETTINGS ###
+# Not implemented - potential to mess things up
+
+
+### SETUP FILE MANAGEMENT ###
+# TODO: Implement
+
+
+### SENSOR CONTROL ###
+
+# Disarm/arm sensor control and perform sensor check ARM
+record(bi, "$(P):GetArmState") {
+    field(DESC, "Get armed state")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(ARM) $(P)")
+    field(ZNAM, "DISARMED")
+    field(ONAM, "ARMED")
+}
+
+record(bo, "$(P):SetArmState") {
+    field(DESC, "Set armed state")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(ARM) $(P)")
+    field(ZNAM, "DISARM")
+    field(ONAM, "CHECK & ARM")
+    field(FLNK, "$(P):GetArmState")
+}
+
+# Dismount sensor DMT
+record(bo, "$(P):DismountSensor") {
+    field(DESC, "Dismount & drop sensor")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeCmd(DMT) $(P)")
+}
+
+# Mount sensor MNT
+record(bo, "$(P):MountSensor") {
+    field(DESC, "Mount sensor")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeCmd(MNT) $(P)")
+}
+
+# Restart measurement RST
+record(bo, "$(P):RestartMeas") {
+    field(DESC, "Restart measurement")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeCmd(RST) $(P)")
+}
+
+# Standby mode SBY
+record(bo, "$(P):StandbyMode") {
+    field(DESC, "Enter standby mode")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeCmd(SBY) $(P)")
+}
+
+# Start measurement STA
+record(bo, "$(P):StartMeasurement") {
+    field(DESC, "Start measurement")
+    field(DTYP, "stream")
+    field(ZNAM, "Push2Start")
+    field(ONAM, "Starting")
+    field(OUT,  "@srg3.proto writeCmd(STA) $(P)")
+}
+
+# Stop sensor STP
+record(bo, "$(P):StopSensor") {
+    field(DESC, "Stop sensor")
+    field(DTYP, "stream")
+    field(ZNAM, "Push2Stop")
+    field(ONAM, "Stopping")
+    field(OUT,  "@srg3.proto writeCmd(STP) $(P)")
+}
+
+
+### MEASUREMENT READOUT ###
+
+# Deceleration rate (raw value) DCR
+record(ai, "$(P):GetDecelRate") {
+    field(DESC, "Get deceleration rate")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(DCR) $(P)")
+    field(EGU,  "sec^-1")
+    field(PREC, "3" )
+}
+
+# Auxiliary channel 1 input IN1
+record(ai, "$(P):AUX1:GetVal") {
+    field(DESC, "Get AUX1 value")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(IN1) $(P)")
+    field(PREC, "3" )
+}
+
+# Auxiliary channel 2 input IN2
+record(ai, "$(P):AUX2:GetVal") {
+    field(DESC, "Get AUX2 value")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(IN2) $(P)")
+    field(PREC, "3" )
+}
+
+# Pressure (raw value) PRS
+# PRS = DCR * CAL * COR
+record(ai, "$(P):GetRawPressure")
+{
+    field( DESC, "Get pressure (raw value)" )
+    field( DTYP, "stream" )
+    field( INP,  "@srg3.proto readFloat(PRS) $(P)" )
+	field( EGU,  "Pa" )
+	field( PREC, "4" )
+	field( FLNK, "$(P):GetAdjPressure" )
+}
+
+# VAL - Measured Pressure Value
+# if UNT == 0
+#	VAL = DCR - OFS
+# if UNT > 0
+#	VAL = PRS - OFS
+record(ai, "$(P):GetAdjPressure")
+{
+    field( DESC, "Get zero adj Pressure")
+    field( DTYP, "stream")
+    field( INP,  "@srg3.proto readFloat(VAL) $(P)")
+	field( EGU,  "Pa" )
+	field( PREC, "4" )
+	field( FLNK, "$(P):Pressure PP MS" )
+}
+
+# Convert pressure from Pascal to Torr
+record( calc, "$(P):Pressure" )
+{
+	field( DESC, "Pressure in Torr" )
+	field( INPA, "$(P):GetAdjPressure NPP MS" )
+	field( INPB, "0.00750061683" )
+	field( CALC, "A * B" )
+	field( EGU,  "T" )
+	field( PREC, "4" )
+}
+
+# Remaining time until next readout REM
+record(ai, "$(P):GetRemainingTime") {
+    field(DESC, "Get time to next readout")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(REM) $(P)")
+    field(EGU,  "s")
+    field(PREC, "3" )
+}
+
+
+### ZERO ADJUSTMENT ###
+
+# Zero adjust value ZAD
+record(ai, "$(P):GetZeroAdjustVal") {
+    field(DESC, "Get zero adjust value")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(ZAD) $(P)")
+    field(PREC, "3" )
+}
+
+record(bo, "$(P):SetZeroAdjust") {
+    field(DESC, "Zero adjust function")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(ZAD) $(P)")
+    field(ZNAM, "UNDO ADJ")
+    field(ONAM, "PERFORM ADJ")
+    field(FLNK, "$(P):GetZeroAdjustVal")
+}
+
+
+### STATUS & MESSAGES ###
+
+# TODO: List logged messages MLG
+
+# Erase logged messages MLG
+record(bo, "$(P):EraseLoggedMsgs") {
+    field(DESC, "Erase logged messages")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(MLG,0) $(P)")
+}
+
+# Read message MSG
+# The output version of this record works a little strangely. It is unclear
+# without testing the device directly what "talkative" mode is. If it is an
+# unending stream of messages, we don't want to use it.
+record(stringin, "$(P):GetMessage") {
+    field(DESC, "Get pending message")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(MSG) $(P)")
+}
+
+record(bo, "$(P):ClearMessage") {
+    field(DESC, "Clear a pending message")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(MSG,0) $(P)")
+}
+
+# Operating hours OPH
+record(longin, "$(P):GetOpHours") {
+    field(DESC, "Get operating hours")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(OPH) $(P)")
+    field(EGU,  "h")
+}
+
+# Rotor control status RCS
+# TODO: drive a calcout to decode this to a string
+# Mask:
+# 0x0F	0 - Disarmed
+#		1 - No sensor detected
+#		2 - Dismount sensor
+#		3 - Idle (sensor at rest)
+#		4 - Standby (sensor coasting)
+#		5 - Starting ...
+#		6 - Measuring (RDY relay on)
+#		7 - Stopping ...
+#		8 - Shutdown ...
+# 0x10	Drive Direction (0 = accel, 1 = decel)
+# 0x20  Drive Operating
+# 0x40  Sensor Unstable
+# 0x80  Busy (Background task executing)
+record(longin, "$(P):GetRCStatus") {
+    field(DESC, "Get rotor control status")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(RCS) $(P)")
+}
+
+# System status STS
+record(longin, "$(P):GetSystemStatus") {
+    field(DESC, "Get system status")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(STS) $(P)")
+}
+
+record(bo, "$(P):ClearSystemStatus") {
+    field(DESC, "Clear system status")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(STS,0) $(P)")
+}
+
+
+### SCRIPT FLOW CONTROL ###
+
+# Unimplemented: I don't think we need this right now
+
+
+### OUTPUT FORMATTING ###
+
+# Current date DAT
+record(stringin, "$(P):GetDate") {
+    field(DESC, "Get current date")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(DAT) $(P)")
+}
+
+# Real number decimal places FMT
+record(longin, "$(P):GetNumberPrec") {
+    field(DESC, "Get # decimal places")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(FMT) $(P)")
+}
+
+record(longout, "$(P):SetNumberPrec") {
+    field(DESC, "Set # decimal places")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(FMT) $(P)")
+    field(DRVL, "1")
+    field(DRVH, "6")
+    info(autosaveFields, "VAL")
+}
+
+# Identification string IDY
+record(stringin, "$(P):GetIDStr") {
+    field(DESC, "Get instrument ID string")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(IDY) $(P)")
+}
+
+# Timestamp of last setup change SDT
+record(stringin, "$(P):GetSetupTimestamp") {
+    field(DESC, "Get last setup timestamp")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(SDT) $(P)")
+}
+
+# Current time TIM
+record(stringin, "$(P):GetTime") {
+    field(DESC, "Get current time")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(TIM) $(P)")
+}
+
+# Temperature scale label TLB
+record(stringin, "$(P):GetTempScaleLabel") {
+    field(DESC, "Get temp. scale label")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(TLB) $(P)")
+}
+
+# Unit label ULB
+record(stringin, "$(P):GetUnitLabel") {
+    field(DESC, "Get unit label")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(ULB) $(P)")
+}
+
+
+### FRONT PANEL & POWER CONTROL ###
+
+# Unimplemented: I don't think we need these commands right now.
+
+
+### PRINTER CONTROL ###
+
+# Unimplemented: I don't think we need these commands right now.
+
+
+### DIRECT OUTPUT ###
+
+# Analog output voltage OUT
+record(ai, "$(P):GetAnalogOutV") {
+    field(DESC, "Get analog output V")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(OUT) $(P)")
+    field(EGU,  "V")
+    field(PREC, "2" )
+}
+
+record(ao, "$(P):SetAnalogOutV") {
+    field(DESC, "Set analog output V")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeFloat(OUT) $(P)")
+    field(EGU,  "V")
+    field(DRVL, "0")
+    field(DRVH, "11")
+    field(PREC, "2" )
+    field(FLNK, "$(P):GetAnalogOutV")
+    info(autosaveFields, "VAL")
+}
+
+# Output override mode OVR
+#record(bi, "$(P):GetOutOverride") {
+#    field(DESC, "Get output override mode")
+#    field(DTYP, "stream")
+#    field(INP,  "@srg3.proto readInt(OVR) $(P)")
+#    field(ZNAM, "AUTOMATIC")
+#    field(ONAM, "MANUAL OVR")
+#}
+
+record(bo, "$(P):SetOutOverride") {
+    field(DESC, "Set output override mode")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(OVR) $(P)")
+    field(ZNAM, "AUTOMATIC")
+    field(ONAM, "MANUAL OVR")
+#    field(FLNK, "$(P):GetOutOverride")
+}
+
+# Remote control outputs RCO
+record(mbbiDirect, "$(P):GetRemOutState") {
+    field(DESC, "Get remote output state")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(RCO) $(P)")
+}
+
+record(mbboDirect, "$(P):SetRemOutState") {
+    field(DESC, "Set remote output state")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(RCO) $(P)")
+    field(FLNK, "$(P):GetRemOutState")
+    info(autosaveFields, "VAL")
+}
+
+# Relay status RLY
+record(mbbiDirect, "$(P):GetRelayState") {
+    field(DESC, "Get relay status")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(RLY) $(P)")
+}
+
+record(mbboDirect, "$(P):SetRelayState") {
+    field(DESC, "Set relay status")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeInt(RLY) $(P)")
+    field(FLNK, "$(P):GetRelayState")
+    info(autosaveFields, "VAL")
+}
+
+
+### DIAGNOSTICS ###
+
+# Acceleration Factor ACL
+record(ai, "$(P):GetAccelFactor") {
+    field(DESC, "Get acceleration factor")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(ACL) $(P)")
+    field(EGU,  "(s*A)^-2")
+    field(PREC, "4" )
+}
+
+# Calibration Factor CAL
+# CAL = PRS / (DCR * COR)
+record(ai, "$(P):GetCalibFactor") {
+    field(DESC, "Get calibration factor")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(CAL) $(P)")
+    field(PREC, "4" )
+}
+
+# Correction Factor COR
+# COR = PRS / (DCR * CAL)
+record(ai, "$(P):GetCorrFactor") {
+    field(DESC, "Get correction factor")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(COR) $(P)")
+    field(PREC, "4" )
+}
+
+# Damping Level A+B DMP
+record(ai, "$(P):GetDampLvlAB") {
+    field(DESC, "Get damping level A+B")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(DMP) $(P)")
+    field(EGU,  "dB")
+    field(PREC, "4" )
+}
+
+# Damping Level A DMP
+record(ai, "$(P):GetDampLvlA") {
+    field(DESC, "Get damping level A")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readChanFloat(DMP,1) $(P)")
+    field(EGU,  "dB")
+    field(PREC, "4" )
+}
+
+# Damping Level B DMP
+record(ai, "$(P):GetDampLvlB") {
+    field(DESC, "Get damping level B")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readChanFloat(DMP,2) $(P)")
+    field(EGU,  "dB")
+    field(PREC, "4" )
+}
+
+# Instrument reset IRS
+record(bo, "$(P):ResetInstrument") {
+    field(DESC, "Reset instrument")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeCmd(IRS) $(P)")
+}
+
+# Initial speed ISP
+record(ai, "$(P):GetInitSpeed") {
+    field(DESC, "Get initial speed")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(ISP) $(P)")
+    field(EGU,  "Hz")
+    field(PREC, "4" )
+}
+
+# Rotor detection status RDS
+# This command not documented
+record(longin, "$(P):GetRotorDetStatus") {
+    field(DESC, "Get rotor detection status")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(RDS) $(P)")
+}
+
+# Rotational speed RSP
+record(ai, "$(P):GetRotSpeed") {
+    field(DESC, "Get rotational speed")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(RSP) $(P)")
+    field(EGU,  "Hz")
+	field( PREC, 2 )
+	field( LOW,  300 )
+	field( LOLO, 2 )
+	field( LSV,  "MINOR" )
+	field( LLSV, "MAJOR" )
+	info( autosaveFields, "HIHI HIGH LOW LOLO HHSV HSV LSV LLSV" )
+}
+
+# Signal level SGL
+record(ai, "$(P):GetSignalLevel") {
+    field(DESC, "Get signal level")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readFloat(SGL) $(P)")
+    field(EGU,  "dB")
+}
+
+# Test mode TST
+record(mbbi, "$(P):GetTestMode") {
+    field(DESC, "Get test mode")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readInt(TST) $(P)")
+    field(ZRVL, "0")
+    field(ONVL, "1")
+    field(TWVL, "2")
+    field(ZRST, "NO TEST")
+    field(ONST, "TEST MODE")
+    field(TWST, "GET SIG STAT")
+}
+
+record(bo, "$(P):ExitTestMode") {
+    field(DESC, "Exit test mode")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(TST,0) $(P)")
+    field(FLNK, "$(P):GetTestMode")
+}
+
+record(bo, "$(P):EnterTestMode") {
+    field(DESC, "Enter test mode")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(TST,1) $(P)")
+    field(FLNK, "$(P):GetTestMode")
+}
+
+record(bo, "$(P):PerformSignalStat") {
+    field(DESC, "Perform signal statistics")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(TST,2) $(P)")
+    field(FLNK, "$(P):GetTestMode")
+}
+
+
+### HEAD ADJUSTMENT ###
+
+# Last head adjustment save HDA
+record(stringin, "$(P):GetLastHeadAdjTime") {
+    field(DESC, "Get last head adj. timestamp")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto readStr(HDA) $(P)")
+}
+
+# Reset head adjustment 0 HDA
+record(bo, "$(P):ResetHeadAdj") {
+    field(DESC, "Reset head adjustment")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(HDA,0) $(P)")
+}
+
+# Adjust levitation control by zeroing the sensor detection voltage 1 HDA
+record(bo, "$(P):HeadLevAdj") {
+    field(DESC, "Head levitation adj.")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(HDA,1) $(P)")
+}
+
+# Motor adjustment: optimize speed control 2 HDA
+record(bo, "$(P):HeadMotorAdj") {
+    field(DESC, "Head motor adjustment")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(HDA,2) $(P)")
+}
+
+# Save head adjustment parameters in EEPROM  9 HDA
+record(bo, "$(P):SaveHeadAdj") {
+    field(DESC, "Save head adj. in EEPROM")
+    field(DTYP, "stream")
+    field(OUT,  "@srg3.proto writeChanCmd(HDA,9) $(P)")
+    field(FLNK, "$(P):GetLastHeadAdjTime")
+}
+
+
+### ERROR CATCHING FOR TALKATIVE MODE ###
+
+# Catch error number
+record(longin, "$(P):GetLastError") {
+    field(DESC, "Get last talkative error")
+    field(DTYP, "stream")
+    field(INP,  "@srg3.proto catchError() $(P)")
+    field(SCAN, "I/O Intr")
+}
+
+
+
+##### PERIODIC UPDATE RECORDS #####
+# We're limited to 9600 baud, so we need to be economical with what we update
+# and how often.
+
+### UpdateAll record - EVNT#1
+# This record prompts UpdateHighRate (and all ensuing records) to scan. 
+# record(longout, "$(P):UpdateAllPrompt") {
+#     field(SCAN, "1 second")
+#     field(VAL, "1")
+#     field(OUT, "$(P):UpdateAll.PROC")
+# }
+
+# This event fans out to all RB records to update them during configuration, or
+# similar mode of operation.
+record(event, "$(P):UpdateAll") {
+    field(DESC, "Update all RBvalues")
+    field(DTYP, "Soft Channel")
+    field(VAL,  "1")
+    field(SCAN, "Passive" )
+    field(FLNK, "$(P):UpdateAll:FRoot")
+    field(PINI, "YES")
+    info(autosaveFields, "SCAN")
+}
+
+record(fanout, "$(P):UpdateAll:FRoot") {
+    field(DESC, "UpdateAll root fanout")
+    field(LNK1, "$(P):UpdateAll:F1")
+    field(LNK2, "$(P):UpdateAll:F2")
+    field(LNK3, "$(P):UpdateAll:F3")
+    field(LNK4, "$(P):UpdateAll:F4")
+    field(LNK5, "$(P):UpdateAll:F5")
+    field(LNK6, "$(P):UpdateAll:F6")
+}
+
+record(fanout, "$(P):UpdateAll:F1") {
+    field(DESC, "UpdateAll fanout 1")
+    field(LNK1, "$(P):UpdateAll:F1:GasType")
+    field(LNK2, "$(P):UpdateAll:F1:2")
+    field(LNK3, "$(P):UpdateAll:F1:3")
+    field(LNK4, "$(P):UpdateAll:F1:4")
+    field(LNK5, "$(P):UpdateAll:F1:5")
+    field(LNK6, "$(P):UpdateAll:F1:6")
+}
+
+record(fanout, "$(P):UpdateAll:F1:GasType") {
+    field(DESC, "UpdateAll fanout 1.1")
+    field(LNK1, "$(P):GetGasMolMass")
+    field(LNK2, "$(P):GetGasType")
+    field(LNK3, "$(P):GetGasTempCoeff")
+    field(LNK5, "$(P):GetGasViscosity")
+    field(LNK6, "$(P):GetGasLabel")
+}
+
+record(fanout, "$(P):UpdateAll:F1:2") {
+    field(DESC, "UpdateAll fanout 1.2")
+    field(LNK1, "$(P):AUX1:GetOffset")
+    field(LNK2, "$(P):AUX2:GetOffset")
+    field(LNK3, "$(P):GetAuxPowerSupply")
+    field(LNK4, "$(P):AUX1:GetScale")
+    field(LNK5, "$(P):AUX2:GetScale")
+    field(LNK6, "$(P):GetArmState")
+}
+
+record(fanout, "$(P):UpdateAll:F1:3") {
+    field(DESC, "UpdateAll fanout 1.3")
+    field(LNK2, "$(P):AUX1:GetVal")
+    field(LNK3, "$(P):AUX2:GetVal")
+}
+
+record(fanout, "$(P):UpdateAll:F1:4") {
+    field(DESC, "UpdateAll fanout 1.4")
+    field(LNK2, "$(P):GetMessage")
+    field(LNK3, "$(P):GetOpHours")
+    field(LNK4, "$(P):GetRCStatus")
+    field(LNK5, "$(P):GetSystemStatus")
+    field(LNK6, "$(P):GetDate")
+}
+
+record(fanout, "$(P):UpdateAll:F1:5") {
+    field(DESC, "UpdateAll fanout 1.5")
+    field(LNK1, "$(P):GetNumberPrec")
+    field(LNK2, "$(P):GetIDStr")
+    field(LNK3, "$(P):GetSetupTimestamp")
+    field(LNK4, "$(P):GetTime")
+    field(LNK5, "$(P):GetTempScaleLabel")
+    field(LNK6, "$(P):GetUnitLabel")
+}
+
+record(fanout, "$(P):UpdateAll:F1:6") {
+    field(DESC, "UpdateAll fanout 1.6")
+    field(LNK1, "$(P):GetAnalogOutV")
+    field(LNK2, "$(P):GetRemOutState")
+    field(LNK3, "$(P):GetAccelFactor")
+    field(LNK4, "$(P):GetAccomFactor")
+    field(LNK5, "$(P):GetCalibFactor")
+    field(LNK6, "$(P):GetCorrFactor")
+}
+
+record(fanout, "$(P):UpdateAll:F2") {
+    field(DESC, "UpdateAll fanout 2")
+    field(LNK1, "$(P):UpdateAll:F2:1")
+    field(LNK2, "$(P):UpdateAll:F2:2")
+    field(LNK3, "$(P):UpdateAll:F2:3")
+}
+
+record(fanout, "$(P):UpdateAll:F2:1") {
+    field(DESC, "UpdateAll fanout 2.1")
+    field(LNK1, "$(P):GetRelayState")
+    field(LNK2, "$(P):GetAutoStart")
+    field(LNK3, "$(P):GetBGAvgSpan")
+    field(LNK4, "$(P):GetBallDensity")
+    field(LNK5, "$(P):GetBallDiameter")
+    field(LNK6, "$(P):GetLowerSpeedLimit")
+}
+
+record(fanout, "$(P):UpdateAll:F2:2") {
+    field(DESC, "UpdateAll fanout 2.2")
+    field(LNK2, "$(P):GetDampLvlA")
+    field(LNK3, "$(P):GetDampLvlB")
+    field(LNK4, "$(P):GetDampLvlAB")
+    field(LNK5, "$(P):GetInitSpeed")
+    field(LNK6, "$(P):GetRotorDetStatus")
+}
+
+record(fanout, "$(P):UpdateAll:F2:3") {
+    field(DESC, "UpdateAll fanout 2.3")
+    field(LNK2, "$(P):GetSignalLevel")
+    field(LNK3, "$(P):GetTestMode")
+    field(LNK4, "$(P):GetLastHeadAdjTime")
+}
+
+record(fanout, "$(P):UpdateAll:F3") {
+    field(DESC, "UpdateAll fanout 3")
+    field(LNK2, "$(P):GetZeroOffset")
+    field(LNK3, "$(P):GetSpeedCtlMode")
+    field(LNK4, "$(P):GetUpperSpeedLimit")
+    field(LNK5, "$(P):GetDecimalPlaces")
+    field(LNK6, "$(P):GetMenuTimeout")
+}
+
+record(fanout, "$(P):UpdateAll:F4") {
+    field(DESC, "UpdateAll fanout 4")
+    field(LNK1, "$(P):GetInstOptions")
+    field(LNK2, "$(P):GetTempUnits")
+    field(LNK3, "$(P):GetPressUnits")
+    field(LNK4, "$(P):GetPrintMaxCount")
+    field(LNK5, "$(P):GetPrintDataOption")
+    field(LNK6, "$(P):GetPrintPageEject")
+}
+
+record(fanout, "$(P):UpdateAll:F5") {
+    field(DESC, "UpdateAll fanout 5")
+    field(LNK1, "$(P):GetPrintFooter")
+    field(LNK2, "$(P):GetPrintHeader")
+    field(LNK3, "$(P):GetPrintInterval")
+    field(LNK4, "$(P):GetPrintPort")
+    field(LNK5, "$(P):GetAnalogOutScale")
+    field(LNK6, "$(P):GetAnalogOutSpan")
+}
+
+record(fanout, "$(P):UpdateAll:F6") {
+    field(DESC, "UpdateAll fanout 6")
+    field(LNK1, "$(P):SP1:GetHyst")
+    field(LNK2, "$(P):SP2:GetHyst")
+    field(LNK3, "$(P):SP1:GetTripPoint")
+    field(LNK4, "$(P):SP2:GetTripPoint")
+    field(LNK5, "$(P):AUX1:GetMode")
+    field(LNK6, "$(P):AUX2:GetMode")
+}
+
+
+### High Speed update record - EVNT#2
+# This record prompts UpdateHighRate (and all ensuing records) to scan. 
+# record(longout, "$(P):UpdateHighRatePrompt") {
+#     field(SCAN, ".5 second")
+#     field(VAL, "2")
+#     field(OUT, "$(P):UpdateHighRate.PROC")
+# }
+
+# This record fans out to those values that are liable to change without user
+# intervention, such as measurements and feedback parameters.
+record(event, "$(P):UpdateHighRate") {
+    field(DESC, "Update RBvalues at high rate")
+    field(DTYP, "Soft Channel")
+    field(VAL,  "2")
+    field(SCAN, "Passive")
+    field(FLNK, "$(P):UpdateHighRate:FRoot")
+    field(PINI, "YES")
+    info(autosaveFields, "SCAN")
+}
+
+record(fanout, "$(P):UpdateHighRate:FRoot") {
+    field(DESC, "UpdateHighRate root fanout")
+    field(LNK1, "$(P):UpdateHighRate:F1")
+    field(LNK2, "$(P):UpdateHighRate:F2")
+}
+
+record(fanout, "$(P):UpdateHighRate:F1") {
+    field(DESC, "UpdateHighRate fanout 1")
+    field(LNK1, "$(P):GetDecelRate")
+    field(LNK2, "$(P):AUX1:GetVal")
+    field(LNK3, "$(P):AUX2:GetVal")
+    field(LNK4, "$(P):GetRawPressure")
+    field(LNK5, "$(P):GetRemainingTime")
+    field(LNK6, "$(P):GetAdjPressure")
+}
+
+record(fanout, "$(P):UpdateHighRate:F2") {
+    field(DESC, "UpdateHighRate fanout 2")
+    field(LNK1, "$(P):GetRotSpeed")
+    field(LNK2, "$(P):GetZeroAdjustVal")
+    field(LNK3, "$(P):GetGasTemperature")
+    field(LNK4, "$(P):GetMeasureTime")
+}

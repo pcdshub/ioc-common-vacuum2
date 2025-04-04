@@ -1,0 +1,349 @@
+# Macros expected:
+#     BASE       - Base PV of this channel.
+#     PORT       - Asyn port.
+#     CONTROLLER - Base PV of the controller.
+#     CHANNEL    - Channel number, 1-4.  This is also the relay setpoint number.
+#     TTLCHAN    - Channel number + 4.  This is the TTL setpoint number.
+
+#
+# IMON triggers the main scan loop.
+#
+
+record(ai, "$(BASE):IMON") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getCurrent($(CHANNEL)) $(PORT)")
+  field(SCAN, "2 second")
+  field(EGU, "A")
+  field(FLNK, "$(BASE):PMON")
+}
+
+record(ai, "$(BASE):PMON") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getPressure($(CHANNEL)) $(PORT)")
+  field(FLNK, "$(BASE):PMONLOG")
+  field(EGU, "T")
+}
+
+record(calc, "$(BASE):PMONLOG") {
+  field(CALC, "LOG(A)")
+  field(HOPR, "-2")
+  field(LOPR, "-11")
+  field(INPA, "$(BASE):PMON")
+  field(FLNK, "$(BASE):VMON")
+}
+
+record(ai, "$(BASE):VMON") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getVoltage($(CHANNEL)) $(PORT)")
+  field(EGU, "V")
+  field(FLNK, "$(BASE):STATUSRAW")
+}
+
+record(ai, "$(BASE):VLINEMON") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getLinevoltage($(CHANNEL)) $(PORT)")
+  field(EGU, "V")
+}
+
+record(ai, "$(BASE):LINEFREQMON") {
+  field(DTYP, "stream")
+  field(DESC, "get line frequency")
+  field(INP, "@gammaqpc.proto.db getLinefrequency($(CHANNEL)) $(PORT)")
+}
+
+#
+# Change this to new status?  This gives a much clearer standby, starting,
+# running, cooldown, error indication on a per-pump basis.
+# 
+# Currently, we're getting a massive enumeration.  Groups of 11:
+# SAFE-CONN, RUNNING, COOL DOWN, PUMP ERROR, INTERLOCK, SHUT DOWN,
+# CALIBRATION.  Then the singletons: 77=SAFE-CONN, 78=Running, 79=WAITING TO START
+# 80=STANDBY.
+#
+record(mbbi, "$(BASE):STATUSRAW") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getStatus($(CHANNEL)) $(PORT)")
+  field(FLNK, "$(BASE):STATUSCALC PP")
+}
+
+record(calc, "$(BASE):STATUSCALC") {
+  field(CALC, "A>=79?(A-72):A>=77?(A-77):FLOOR(A/11)")
+  field(INPA, "$(BASE):STATUSRAW NPP MS")
+  field(FLNK, "$(BASE):STATUS PP")
+}
+
+record(mbbi, "$(BASE):STATUS") {
+  field(INP, "$(BASE):STATUSCALC NPP MS")
+  field(ZRST, "SAFECONN")
+  field(ONST, "RUNNING")
+  field(TWST, "COOLDOWN")
+  field(THST, "PUMP_ERROR")
+  field(FRST, "INTERLOCK")
+  field(FVST, "SHUT_DOWN")
+  field(SXST, "CALIBRATION")
+  field(SVST, "WAIT_TO_START")
+  field(EIST, "STANDBY")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(TWVL, "2")
+  field(THVL, "3")
+  field(FRVL, "4")
+  field(FVVL, "5")
+  field(SXVL, "6")
+  field(SVVL, "7")
+  field(EIVL, "8")
+  field(ZRSV, "MAJOR")
+  field(ONSV, "NO_ALARM")
+  field(TWSV, "MAJOR")
+  field(THSV, "MAJOR")
+  field(FRSV, "MAJOR")
+  field(FVSV, "MAJOR")
+  field(SXSV, "MAJOR")
+  field(SVSV, "MINOR")
+  field(EISV, "MAJOR")
+  field(FLNK, "$(BASE):STATUSCODECL PP")
+  field(PINI, "YES")
+}
+
+record(calc, "$(BASE):STATUSCODECL") {
+  field(INPA, "$(BASE):STATUSRAW NPP MS")
+  field(CALC, "A>=77 ? 0: A%11")
+  field(FLNK, "$(BASE):STATUSCODE PP")
+}
+
+record(mbbi, "$(BASE):STATUSCODE") {
+  field(INP, "$(BASE):STATUSCODECL NPP MS")
+  field(ZRST, "NO_ERROR")
+  field(ONST, "TOO_MANY_COOLDN")
+  field(TWST, "RUN_P_HIGH")
+  field(THST, "RUN_I_HIGH")
+  field(FRST, "START_P_HIGH")
+  field(FVST, "COOL_PUMP_PWR")
+  field(SXST, "COOL_SPLY_I")
+  field(SVST, "COOL_SHORT_CIRC")
+  field(EIST, "COOL_SPLY_MLFN")
+  field(NIST, "COOL_V_LOW")
+  field(TEST, "COOL_ARC_DETCT")
+  field(ZRVL, "0")
+  field(ONVL, "1")
+  field(TWVL, "2")
+  field(THVL, "3")
+  field(FRVL, "4")
+  field(FVVL, "5")
+  field(SXVL, "6")
+  field(SVVL, "7")
+  field(EIVL, "8")
+  field(NIVL, "9")
+  field(TEVL, "10")
+  field(ZRSV, "NO_ALARM")
+  field(ONSV, "MAJOR")
+  field(TWSV, "MAJOR")
+  field(THSV, "MAJOR")
+  field(FRSV, "MAJOR")
+  field(FVSV, "MAJOR")
+  field(SXSV, "MAJOR")
+  field(SVSV, "MAJOR")
+  field(EISV, "MAJOR")
+  field(NISV, "MAJOR")
+  field(TESV, "MAJOR")
+}
+
+#
+# These values don't update regularly.  We currently assume that only the IOC
+# writes them.  We could scan the readback though, if people enter values on the
+# console.
+#
+
+record(ao, "$(BASE):PUMPSIZEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setPumpsize($(CHANNEL)) $(PORT)")
+  field(DRVH, "1200")
+  field(DRVL, "10")
+  field(EGU,  "l/s")
+  field(ASG, "VACWRITE")
+  field(FLNK, "$(BASE):PUMPSIZE")
+  info(autosaveFields, "VAL")
+}
+
+record(ai, "$(BASE):PUMPSIZE") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getPumpsize($(CHANNEL)) $(PORT)")
+  field(EGU,  "l/s")
+  field(PINI, "YES")
+}
+
+record(ao, "$(BASE):CALFACTORDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setCalibfactor($(CHANNEL)) $(PORT)")
+  field(DRVH, "9.99")
+  field(DRVL, "0.00")
+  field(PREC, "2")
+  field(ASG, "VACWRITE")
+  field(FLNK, "$(BASE):CALFACTOR")
+  info(autosaveFields, "VAL")
+}
+
+record(ai, "$(BASE):CALFACTOR") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getCalibfactor($(CHANNEL)) $(PORT)")
+  field(PREC, "2")
+  field(PINI, "YES")
+}
+
+record(mbbo, "$(BASE):AOMODEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setAnalogoutmode($(CHANNEL)) $(PORT)")
+  field(ZRST, "OFF")
+  field(ONST, "LOG_P")
+  field(TWST, "LOG_I")
+  field(THST, "V_PER_1_UA")
+  field(FRST, "V_PER_10_UA")
+  field(FVST, "V_PER_100_UA")
+  field(SXST, "V_PER_1_MA")
+  field(SVST, "V_PER_10_MA")
+  field(EIST, "V_PER_50_MA")
+  field(NIST, "V_PER_1_NA")
+  field(TEST, "V_PER_10_NA")
+  field(ELST, "V_PER_100_NA")
+  field(TVST, "V_PER_1_KV")
+  field(ASG, "VACWRITE")
+  field(FLNK, "$(BASE):AOMODE")
+  info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(BASE):AOMODE") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getAnalogoutmode($(CHANNEL)) $(PORT)")
+  field(ZRST, "OFF")
+  field(ONST, "LOG_P")
+  field(TWST, "LOG_I")
+  field(THST, "V_PER_1_UA")
+  field(FRST, "V_PER_10_UA")
+  field(FVST, "V_PER_100_UA")
+  field(SXST, "V_PER_1_MA")
+  field(SVST, "V_PER_10_MA")
+  field(EIST, "V_PER_50_MA")
+  field(NIST, "V_PER_1_NA")
+  field(TEST, "V_PER_10_NA")
+  field(ELST, "V_PER_100_NA")
+  field(TVST, "V_PER_1_KV")
+  field(ZRSV, "NO_ALARM")
+  field(ONSV, "MAJOR")
+  field(TWSV, "MAJOR")
+  field(THSV, "MAJOR")
+  field(FRSV, "MAJOR")
+  field(FVSV, "MAJOR")
+  field(SXSV, "MAJOR")
+  field(SVSV, "MAJOR")
+  field(EISV, "MAJOR")
+  field(NISV, "MAJOR")
+  field(TESV, "MAJOR")
+  field(ELSV, "MAJOR")
+  field(TVSV, "MAJOR")
+  field(PINI, "YES")
+}
+
+record(mbbo, "$(BASE):DOMODEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setDigitaloutmode($(CHANNEL)) $(PORT)")
+  field(ZRST, "OFF")
+  field(ONST, "HV_INTERLOCK")
+  field(TWST, "HV_SWITCH")
+  field(THST, "TSP_1_INTERLOCK")
+  field(FRST, "TSP_2_INTERLOCK")
+  field(ZRVL, "00")
+  field(ONVL, "01")
+  field(TWVL, "02")
+  field(THVL, "03")
+  field(FRVL, "04")
+  field(ASG, "VACWRITE")
+  field(FLNK, "$(BASE):DOMODE")
+  info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(BASE):DOMODE") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getDigitaloutmode($(CHANNEL)) $(PORT)")
+  field(ZRST, "OFF")
+  field(ONST, "HV_INTERLOCK")
+  field(TWST, "HV_SWITCH")
+  field(THST, "TSP_1_INTERLOCK")
+  field(FRST, "TSP_2_INTERLOCK")
+  field(ZRVL, "00")
+  field(ONVL, "01")
+  field(TWVL, "02")
+  field(THVL, "03")
+  field(FRVL, "04")
+  field(ZRSV, "NO_ALARM")
+  field(ONSV, "MAJOR")
+  field(TWSV, "MAJOR")
+  field(THSV, "MAJOR")
+  field(FRSV, "MAJOR")
+  field(PINI, "YES")
+}
+
+record(bo, "$(BASE):STATEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setOnoff($(CHANNEL)) $(PORT)")
+  field(ASG, "VACWRITE")
+  field(ZNAM, "OFF")
+  field(ONAM, "ON")
+  info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(BASE):STATEMON") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getState($(CHANNEL)) $(PORT)")
+  field(ZRST, "WAITING TO START")
+  field(ONST, "STANDBY")
+  field(TWST, "SAFE-CONN")
+  field(THST, "RUNNING")
+  field(FRST, "COOL DOWN")
+  field(FVST, "PUMP ERROR")
+  field(SXST, "INTERLOCK")
+  field(SVST, "SHUTDOWN")
+  field(EIST, "CALIBRATION")
+  field(ZRSV, "MAJOR")
+  field(PINI, "YES")
+}
+
+record(mbbo, "$(BASE):DISPDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setDisplaymode($(CHANNEL)) $(PORT)")
+  field(ZRST, "VOLTAGE")
+  field(ONST, "CURRENT")
+  field(TWST, "PRESSURE")
+  field(ASG, "VACWRITE")
+  info(autosaveFields, "VAL")
+}
+
+record(stringin, "$(BASE):PNAME") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getPumpName($(CHANNEL)) $(PORT)")
+  field(PINI, "YES")
+}
+
+record(stringout, "$(BASE):PNAMEDES") {
+  field(DTYP, "stream")
+  field(OUT, "@gammaqpc.proto.db setPumpName($(CHANNEL)) $(PORT)")
+  info(autosaveFields, "VAL")
+}
+
+record(stringout, "$(BASE):VPCNAME") {
+  field(PINI, "YES")
+  field(VAL, "$(CONTROLLER)")
+}
+
+record(mbbi, "$(BASE):SUPPLYSIZE") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getSupplysize($(CHANNEL)) $(PORT)")
+  field(ZRST, "100 mA max")
+  field(ONST, "500 mA max")
+  field(PINI, "YES")
+}
+
+record(ai, "$(BASE):HVSTRAPPING") {
+  field(DTYP, "stream")
+  field(INP, "@gammaqpc.proto.db getHVStrapping($(CHANNEL)) $(PORT)")
+  field(PINI, "YES")
+}

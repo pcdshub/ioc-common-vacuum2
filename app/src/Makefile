@@ -3,7 +3,26 @@ TOP=../..
 include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
-#=============================
+#  #=============================
+
+#=====================================================
+# Path to "NON EPICS" External PACKAGES: USER INCLUDES
+# #======================================================
+#
+# # Support Perl C regular expression library
+USR_INCLUDES += -I$(PCRE_INCLUDE)
+#
+# #======================================================
+# # PATH TO "NON EPICS" EXTERNAL PACKAGES: USER LIBRARIES
+# #======================================================
+#
+pcre_DIR = $(PCRE_LIB)
+#
+# # ======================================================
+# # LINK "NON EPICS" EXTERNAL PACKAGE LIBRARIES STATICALLY
+# #=======================================================
+#
+USR_LIBS_Linux += pcre
 
 #=============================
 # Build an ioc application
@@ -35,6 +54,8 @@ vacuum_LIBS += devIocStats
 vacuum_LIBS += autosave
 vacuum_LIBS += asyn
 vacuum_LIBS += stream
+vacuum_LIBS += calc
+vacuum_LIBS += history
 vacuum_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 #===========================

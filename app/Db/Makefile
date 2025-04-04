@@ -38,15 +38,15 @@ DB += navigator.db
 # Create and install (or just install)
 # Archive files, templates, substitutions like this
 #
-ARCHIVE += vacuum-ioc.archive
+# ARCHIVE += vacuum-ioc.archive
 
 ARCHIVE += archive_937a_pr.tpl-arch archive_937a_cc.tpl-arch
 ARCHIVE += archive_937b_pr.tpl-arch archive_937b_cc.tpl-arch
 ARCHIVE += archive_937a_tc.tpl-arch archive_937a_mp.tpl-arch
 ARCHIVE += archive_937b_tc.tpl-arch archive_937b_mp.tpl-arch
 
-ARCHIVE += $(QPC)/app/Db/qpc_controller.tpl-arch
-ARCHIVE += $(QPC)/app/Db/qpc_channel.tpl-arch
+ARCHIVE_INSTALLS += $(QPC)/archive/qpc_controller.tpl-arch
+ARCHIVE_INSTALLS += $(QPC)/archive/qpc_channel.tpl-arch
 
 ARCHIVE += srg.archive
 
@@ -57,22 +57,16 @@ ARCHIVE += archive_twistorr.tpl-arch
 # Create and install (or just install)
 # Autosave request files, templates, substitutions like this
 #
-REQ += vacuum-ioc.req
+# REQ += vacuum-ioc.req
 
 REQ += autosave_937a_pr.tpl-req autosave_937a_cc.tpl-req
 REQ += autosave_937b_pr.tpl-req autosave_937b_cc.tpl-req
 REQ += autosave_937a_tc.tpl-req autosave_937a_mp.tpl-req
 REQ += autosave_937b_tc.tpl-req autosave_937b_mp.tpl-req
 
-REQ += $(QPC)/app/Db/qpc_controller.tpl-req
-REQ += $(QPC)/app/Db/qpc_channel.tpl-req
+REQ_INSTALLS += $(QPC)/autosave/qpc_controller.tpl-req
+REQ_INSTALLS += $(QPC)/autosave/qpc_channel.tpl-req
 
-# Nothing to build for autosave, just install from $AUTOSAVE/db
-DB_INSTALLS += $(AUTOSAVE)/db/save_restoreStatus.db
-# Nothing to build for asyn, just install from $ASYN/db
-DB_INSTALLS += $(ASYN)/db/asynRecord.db
-# Nothing to build for iocAdmin, just install from $IOCADMIN/db
-DB_INSTALLS += $(IOCADMIN)/db/iocSoft.db
 
 include $(TOP)/configure/RULES
 #----------------------------------------

@@ -1,0 +1,29 @@
+file srg3.template {
+    { P = "$(BASE)" }
+}
+
+file srg3-calib.template {
+    { P = "$(BASE)" }
+}
+
+file ai_hist_pattern.db
+{
+    pattern
+    {	PV,				   EGU,	    RMS_LOLO,	RMS_LOW,    RMS_HIGH,	RMS_HIHI    }
+    {	"$(BASE):GetGasTemperature",	   C,	    0,		0,	    0,		0	    }
+    {	"$(BASE):Calib:Pressure",	   T,	    0,		0,	    0,		0	    }
+    {	"$(BASE):Calib:Pressure:Calc",	   mbar,    0,		0,	    0,		0	    }
+    {	"$(BASE):Calib:Pressure:Pa",	   Pa,	    0,		0,	    0,		0	    }
+    {	"$(BASE):Calib:Pressure:Smoothed", T,	    0,		0,	    0,		0	    }
+    {	"$(BASE):GetDecelRate",		   "1/sec", 0,		0,	    0,		0	    }
+    {	"$(BASE):DecelRate:Gas",	   "1/sec", 0,		0,	    0,		0	    }
+    {	"$(BASE):GetRawPressure",	   Pa,	    0,		0,	    0,		0	    }
+    {	"$(BASE):GetRemainingTime",	   s,	    0,		0,	    0,		0	    }
+    {	"$(BASE):GetRotSpeed",		   Hz,	    0,		0,	    0,		0	    }
+    {	"$(BASE):GetSignalLevel",	   dB,	    0,		0,	    0,		0	    }
+    {	"$(BASE):CheckRotPH"		   "1/Hour",0,		0,	    0,		0	    }
+}
+
+file srgWatchdog.template {
+    { P = "$(BASE)" }
+}

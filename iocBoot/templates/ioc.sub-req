@@ -12,10 +12,10 @@ file archive_SR.tpl-arch
     { IOC = "$$IOC_PV" }
 }
 
-file vacuum-ioc.req
-{
-	{ IOC = "$$IOC_PV" }
-}
+# file vacuum-ioc.req
+# {
+# 	{ IOC = "$$IOC_PV" }
+# }
 
 $$LOOP(MKS937A_SLOT)
 	$$IF(TYPE,cc)

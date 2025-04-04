@@ -1,0 +1,26 @@
+# Autosave list for Pirani gauge
+
+# Relay Set Point value
+#$(device):PSTATSPDES.VAL
+
+# Relay set point value readback limits and alarms
+# Relays are not currently supported 
+# 
+# $(device):PSTATSPRBCK.HIHI
+# $(device):PSTATSPRBCK.HIGH
+# $(device):PSTATSPRBCK.LOW
+# $(device):PSTATSPRBCK.LOLO
+# $(device):PSTATSPRBCK.HHSV
+# $(device):PSTATSPRBCK.HSV
+# $(device):PSTATSPRBCK.LSV
+# $(device):PSTATSPRBCK.LLSV
+
+# Relay set point enable value
+$(device):PSTATEN.VAL
+
+# Relay set point enable readback alarms
+# Relays are not currently supported
+#
+# $(device):PSTATENRBCK.ZSV
+# $(device):PSTATENRBCK.OSV
+

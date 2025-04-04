@@ -1,0 +1,19 @@
+# Archive list for twistorr
+
+$(BASE):PUMP_CURRENT		1	monitor
+$(BASE):PUMP_VOLTAGE		1	monitor
+$(BASE):PUMP_POWER  		1	monitor
+$(BASE):PUMP_DRIVE_FREQ		1	monitor
+$(BASE):PUMP_TEMP   		1	monitor
+$(BASE):PUMP_STATUS   		1	monitor
+$(BASE):PUMP_ERROR   		1	monitor
+
+$(BASE):HIGH_LOAD   		1	monitor
+$(BASE):SHORT_CIRCUIT   	1	monitor
+$(BASE):OVERVOLTAGE   		1	monitor
+$(BASE):AUX_FAIL  	        1	monitor
+$(BASE):POWER_FAIL   	    1	monitor
+$(BASE):CONTROLLER_OVERTEMP	1	monitor
+$(BASE):PUMP_OVERTEMP   	1	monitor
+$(BASE):NO_CONNECTION   	1	monitor
+
