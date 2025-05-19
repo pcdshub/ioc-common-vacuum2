@@ -1,0 +1,24 @@
+# default group
+* @pcdshub/vacuum-sme
+
+# language-specific group(s)
+## EPICS files
+*.archive @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.autosave @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.cmd @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.db @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.dbd @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.edl @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.ioc @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.proto @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.req @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.sub-arch @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.sub-req @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.substitutions @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.tpl-arch @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+*.tpl-req @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+RELEASE_SITE @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+/configure/RELEASE @pcdshub/vacuum-sme @pcdshub/epics-reviewers
+
+# github folder holds administrative files
+.github/** @pcdshub/software-admin
